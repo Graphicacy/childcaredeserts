@@ -1,0 +1,11 @@
+node_modules
+docs
+*.log
+.npm
+.DS_Store
+.dropbox
+.dropbox.attr
+.dropbox.cache
+.Trash-*
+.sass-cache
+.env

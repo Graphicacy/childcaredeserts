@@ -1,0 +1,34 @@
+{
+  "name": "build",
+  "version": "1.0.0",
+  "description": "generic interactive build",
+  "keywords": [],
+  "main": "src/js/index.js",
+  "config": {
+    "stage": "projects/2016"
+  },
+  "scripts": {
+    "start": "npm run watch & npm run livereload & npm run connect",
+    "connect": "http-server -o",
+    "livereload": "livereload public",
+    "watch": "watchify src/js/index.js -o public/app.js -v & npm run sass -- -w src/sass",
+    "build": "npm run browserify && npm run sass && npm run minify",
+    "browserify": "browserify src/js/index.js -o public/app.js -v",
+    "minify": "uglifyjs public/app.js -o public/app.min.js & minify public/app.css -o public/app.min.css ",
+    "sass": "node-sass src/sass/index.scss public/app.css",
+    "connect-stage": "ssh -i $RSA_KEY $STAGE_NAME@$STAGE_IP",
+    "push-stage": "scp -i $RSA_KEY -r public/* $STAGE_NAME@$STAGE_IP:/var/www/interactives/$npm_package_config_stage/$npm_package_name && open https://interactives-stage.devprogress.org/$npm_package_config_stage/$npm_package_name/"
+  },
+  "author": "Andrew Lomax",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "browserify": "^13.0.1",
+    "http-server": "^0.9.0",
+    "livereload": "^0.4.1",
+    "minifier": "^0.7.1",
+    "node-sass": "^3.7.0",
+    "uglify-js": "^2.6.2",
+    "watchify": "^3.7.0"
+  }
+}
