@@ -5,4 +5,5 @@ cd $1
 git remote remove origin
 git remote add core ~/Dropbox/cap/__build/.git
 mkdir docs
+mkdir public/data
 rm buildive
