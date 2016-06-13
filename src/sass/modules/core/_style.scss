@@ -1,0 +1,159 @@
+html,body{
+  font-family: $sans-serif-family;
+  color: #333;
+  text-rendering: optimizeLegibility;
+  font-size: 1em;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  position: relative;
+  height: 50px;
+  width: 100%;
+  z-index: 1000;
+  margin: 0 0 15px 0;
+  @extend %clearfix;
+}
+
+header > div,
+header > .wrap > div {
+  float: left;
+  height: 100%;
+  line-height: 50px;
+}
+
+header > .wrap,
+main > .wrap{
+  float: none;
+  padding: 0 10px;
+}
+
+footer {
+  min-height: 50px;
+  width: 100%;
+  z-index: 1000;
+  @extend %clearfix;
+}
+
+main {
+  width: 90%;
+  max-width: 880px;
+  margin: 25px auto;
+  padding-bottom: 25px;
+}
+
+h1,h2,h3,h4{
+  font-family: $serif-family;
+  font-weight: 700;
+  margin: 1em 0;
+}
+
+h5,h6{
+  font-family: $sans-serif-family;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 1em 0;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1.17em;
+    font-weight: 600;
+}
+
+h4 {
+    font-size: 1em;
+    font-weight: 400;
+}
+
+h5 {
+    font-size: 0.83em;
+}
+
+h6 {
+    font-size: 0.75em;
+}
+
+.hed{
+  margin: 5px 0 0 0;
+}
+
+.dek {
+  margin: 0 0 5px 0;
+  font-weight: 300;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li a {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+a {
+  color: color( medium-blue, 0.9 );
+  text-decoration: none;
+  border-bottom: 1px dotted color( medium-blue, 0.9 );
+}
+
+a:visited,
+a:active{
+  color: color( medium-blue, 0.75 );
+}
+
+strong{
+  font-weight: 600;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  color: color( blue, 0.9 );
+}
+
+.logo{
+  position: relative;
+  display: block;
+  min-width: 150px;
+  min-height: 50px;
+}
+
+.logo:after{
+  content: " ";
+  height: 100%;
+  width: 100%;
+  background-size: 90% auto;
+  background-position: 0 center;
+  background-repeat: no-repeat;
+  background-image: url( images/cap-logo-blue.png );
+  opacity: 0.65;
+  @include center;
+}
+
+.logo.white:after{
+  background-image: url( images/cap-logo-white.png);
+  opacity: 1;
+}
+
+svg{
+  user-select: none;
+}
+
+.axis line {
+  fill: none;
+  stroke: #000;
+}
+
+.axis path{
+  display: none;
+}
