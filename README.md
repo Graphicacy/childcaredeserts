@@ -9,8 +9,10 @@ export STAGE_NAME="[username for servers]"
 export STAGE_IP="[IP address of staging server]"
 ```
 - *(optional)* Install all development dependencies globally on machine to keep the node_modules directory smaller: `npm install -g browserify uglify-js watchify minifier node-sass http-server livereload`, otherwise run `npm install` during Project Setup
+- Set up bash build script for convenience. Open `buildive` file and change .git locations to cloned directory's location. Then run `cp buildive /usr/local/bin`
 
 ### Project Setup
+- run `buildive <interactive name>`
 - Open `package.json` and change name, description, keyword, staging directory
 - Open `public/index.html` and change meta data
 - run `npm install` if you did not install development dependencies globally
