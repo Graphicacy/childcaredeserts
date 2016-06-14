@@ -1,10 +1,11 @@
 # Buildive: An Interactive Build Template
 
 ## Getting Started
-A dead simple template for building interactives. All build tasks are handled with npm scripts inside `package.json`. Source files are kept in src/ while build files are kept in public/. To keep things tidy and modular, this template is designed with Browserify and Sass in mind and has a directory structure meant to reinforce modular code.
+A dead simple template for building interactives. All build tasks are handled with [npm](https://github.com/npm/npm) scripts inside `package.json`. Source files are kept in src/ while build files are kept in public/. To keep things tidy and modular, this template is designed with [Browserify](https://github.com/substack/node-browserify#usage) and [Sass](https://github.com/sass/sass) in mind and has a directory structure meant to reinforce modular code.
 
 ### Build Setup
-- clone this repo
+- make sure you have [node and the latest npm](https://docs.npmjs.com/getting-started/installing-node) installed
+- clone this repo: `git clone https://github.com/amprog/buildive.git`
 - define the following as environment variables:
 ```
 export RSA_KEY="[path/to/rsa/key]"
@@ -12,7 +13,7 @@ export STAGE_NAME="[username for servers]"
 export STAGE_IP="[IP address of staging server]"
 ```
 - *(optional)* Install all development dependencies globally on machine to keep the node_modules directory smaller: `npm install -g browserify uglify-js watchify minifier node-sass http-server livereload`, otherwise run `npm install` during Project Setup
-- Set up bash build script for convenience. Open `buildive` file and change .git locations to cloned directory's location. Then run `cp buildive /usr/local/bin/`
+- Set up bash build script for convenience: `cp buildive /usr/local/bin/`
 
 ### Project Setup
 - run `buildive <interactive name>`
@@ -23,7 +24,7 @@ export STAGE_IP="[IP address of staging server]"
 ### Develop
 - Install project dependencies (e.g. `npm install d3 react underscore --save`)
 - Start local server / livereload : `npm start`
-- Use CommonJS syntax to import scripts into `src/js/index.js`
+- Use [CommonJS](http://requirejs.org/docs/commonjs.html) syntax to import scripts into `src/js/index.js`
   - `require( './my-class.js' )`
 - @import .scss files into `src/sass/index.scss`
 
@@ -57,7 +58,7 @@ export STAGE_IP="[IP address of staging server]"
 | @mixin animation-optimization | add translateZ(0) to elements for faster GPU rendering on  mobile devices |
 | @mixin light-box-shadow($border-color*:optional*) | a simple, subtle box shadow |
 
-# NPM scripts
+## NPM scripts
 
 |  command | use |
 |---|---|
