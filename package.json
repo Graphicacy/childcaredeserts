@@ -17,7 +17,7 @@
     "minify": "uglifyjs public/app.js -o public/app.min.js & minify public/app.css -o public/app.min.css ",
     "sass": "node-sass src/sass/index.scss public/app.css",
     "connect-stage": "ssh -i $RSA_KEY $STAGE_NAME@$STAGE_IP",
-    "push-stage": "scp -i $RSA_KEY -r public/* $STAGE_NAME@$STAGE_IP:/var/www/interactives/$npm_package_config_stage/$npm_package_name && open https://interactives-stage.devprogress.org/$npm_package_config_stage/$npm_package_name/"
+    "push-stage": "scp -i $RSA_KEY -r public $STAGE_NAME@$STAGE_IP:/var/www/interactives/$npm_package_config_stage/$npm_package_name && open https://interactives-stage.devprogress.org/$npm_package_config_stage/$npm_package_name/"
   },
   "author": "Andrew Lomax",
   "license": "ISC",
