@@ -1,4 +1,4 @@
-# Interactive Build Template
+# Buildive: An Interactive Build Template
 
 ## Getting Started
 A dead simple template for building interactives. All build tasks are handled with npm scripts inside `package.json`. Source files are kept in src/ while build files are kept in public/. To keep things tidy and modular, this template is designed with Browserify and Sass in mind and has a directory structure meant to reinforce modular code.
@@ -48,10 +48,10 @@ export STAGE_IP="[IP address of staging server]"
 |---|---|
 | @function color( $CAP-color, $opacity*:optional*)  | Use CAP palettes for red, blue, brown, yellow, orange and gray in dark, medium, light, ultra-light (e.g.: `box-shadow: 0 0 1px color( ultra-light-blue, 0.75 );`)|
 | @mixin vertical-center  |  vertically center element (inside relative positioned parent) |
-|  @mixin horizontal-center | horizontally center element (inside relative positioned parent)  |
+| @mixin horizontal-center | horizontally center element (inside relative positioned parent)  |
 | @mixin center | center elment horizontally and vertically (inside relative positioned parent) |
-| @mixin bottom-box-border($thickness*:integer*, $color*:optional*) | add border with changing box-sizing |  
-| @mixin top-box-border($thickness*:integer*, $color*:optional*) | add border with changing box-sizing |
+| @mixin bottom-box-border($thickness*:integer*, $color*:optional*) | add border without changing box-sizing |  
+| @mixin top-box-border($thickness*:integer*, $color*:optional*) | add border without changing box-sizing |
 | @mixin transition($property,$duration, $transition) | convenience mixin for cross-browser support |
 | @mixin rotate($deg) | convenience mixin for cross-browser support |
 | @mixin animation-optimization | add translateZ(0) to elements for faster GPU rendering on  mobile devices |

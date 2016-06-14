@@ -1,7 +1,7 @@
 {
-  "name": "build",
+  "name": "buildive",
   "version": "1.0.0",
-  "description": "generic interactive build",
+  "description": "generic interactive build tool",
   "keywords": [],
   "main": "src/js/index.js",
   "config": {
