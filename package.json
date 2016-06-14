@@ -17,7 +17,8 @@
     "minify": "uglifyjs public/app.js -o public/app.min.js & minify public/app.css -o public/app.min.css ",
     "sass": "node-sass src/sass/index.scss public/app.css",
     "connect-stage": "ssh -i $RSA_KEY $STAGE_NAME@$STAGE_IP",
-    "push-stage": "scp -i $RSA_KEY -r public $STAGE_NAME@$STAGE_IP:/var/www/interactives/$npm_package_config_stage/$npm_package_name && open https://interactives-stage.devprogress.org/$npm_package_config_stage/$npm_package_name/"
+    "push-stage": "scp -i $RSA_KEY -r public $STAGE_NAME@$STAGE_IP:/var/www/interactives/$npm_package_config_stage/$npm_package_name && open https://interactives-stage.devprogress.org/$npm_package_config_stage/$npm_package_name/",
+    "mustache": "find src/views/partials -name '*.mustache' | xargs -I {} echo '-p' {} ' ' | xargs -I {} sh -c 'eval mustache {} package.json src/views/index.mustache > index.html'"
   },
   "author": "Andrew Lomax",
   "license": "ISC",
@@ -27,8 +28,15 @@
     "http-server": "^0.9.0",
     "livereload": "^0.4.1",
     "minifier": "^0.7.1",
+    "mustache": "^2.2.1",
     "node-sass": "^3.7.0",
     "uglify-js": "^2.6.2",
     "watchify": "^3.7.0"
+  },
+  "meta": {
+    "title": "Hed",
+    "permalink": "",
+    "socialImage": "images/card.png",
+    "typekit": "qhd2jwq.js"
   }
 }
