@@ -56,3 +56,17 @@ export STAGE_IP="[IP address of staging server]"
 | @mixin rotate($deg) | convenience mixin for cross-browser support |
 | @mixin animation-optimization | add translateZ(0) to elements for faster GPU rendering on  mobile devices |
 | @mixin light-box-shadow($border-color*:optional*) | a simple, subtle box shadow |
+
+# NPM scripts
+
+|  command | use |
+|---|---|
+| `npm start` | watch files, livereload, start server at `public/`. Does not minify. |
+| `npm run connect` | start server at `public/` |
+| `npm run build` | for production-ready codes, adds minification |
+| `npm run connect-stage` | connect to staging server via ssh (must have RSA_KEY, STAGE_NAME, and STAGE_IP defined as environment variables ) |
+| `npm run push-stage` | copies `public/` to staging server to a folder in `interactives/projects/2016/` with the packages name (e.g interactives/projects/2016/buildive/), to use a different directory, change the `stage` config in `package.json` (must have RSA_KEY, STAGE_NAME, and STAGE_IP defined as environment variables ) |
+| `npm run watch` | watch js and sass files |
+| `npm run browserify` | build js files |
+| `npm run sass` | build sass files |
+| `npm run minify` | minify js and sass files |
