@@ -26,11 +26,10 @@ export STAGE_IP="[IP address of staging server]"
 - Start local server / livereload : `npm start`
 - Use [CommonJS](http://requirejs.org/docs/commonjs.html) syntax to import scripts into `src/js/index.js`
 - @import .scss files into `src/sass/index.scss`
-- Using mustache's partials syntax (`{{> partial_name }}`), add partials to `src/views/index.mustache` (note: partials must have a unique filenames across partials/ folder and have .mustache extension)
+- Using mustache's partials syntax (`{{> partial_name }}`), add partials to `src/views/index.mustache` (note: partials must have a unique filenames across `partials/` and have .mustache extension)
 
 ### Build:
   - `npm run build`
-  - Open `public/index.html` and change app.css to app.min.css and app.js to app.min.js
   - push to staging server: `npm run push-stage`.
 
 ## Interactive styling
@@ -66,9 +65,10 @@ export STAGE_IP="[IP address of staging server]"
 | `npm run connect` | start server at `public/` |
 | `npm run build` | for production-ready codes, adds minification |
 | `npm run connect-stage` | connect to staging server via ssh (must have RSA_KEY, STAGE_NAME, and STAGE_IP defined as environment variables ) |
-| `npm run push-stage` | copies `public/` to staging server to a folder in `interactives/projects/2016/` with the packages name (e.g interactives/projects/2016/buildive/), to use a different directory, change the `stage` config in `package.json` (must have RSA_KEY, STAGE_NAME, and STAGE_IP defined as environment variables ) |
+| `npm run push-stage` | copies `public/` to staging server to a folder in `interactives/projects/2016/` with the package's name (e.g interactives/projects/2016/buildive/), to use a different directory, change the `stage` config in `package.json` (must have RSA_KEY, STAGE_NAME, and STAGE_IP defined as environment variables ) |
 | `npm run watch` | watch js and sass files |
 | `npm run browserify` | build js files |
 | `npm run sass` | build sass files |
 | `npm run minify` | minify js and sass files |
 | `npm run mustache` | Mustache's CLI doesn't add partials recursively. Hack to retrieve all partials, insert package.json's meta data and render HTML to `public/index.html`  |
+| `npm run mini:add` | Swap references to app.js/app.css for app.min.js/app.min.css in public/index.html |
