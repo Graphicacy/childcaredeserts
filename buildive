@@ -1,9 +1,9 @@
 #!/bin/bash
 
-git clone ~/Dropbox/cap/buildive/.git $1
+git clone https://github.com/amprog/buildive.git $1
 cd $1
 git remote remove origin
-git remote add core ~/Dropbox/cap/buildive/.git
+git remote add core https://github.com/amprog/buildive.git
 mkdir docs
 mkdir public/data
 rm buildive
