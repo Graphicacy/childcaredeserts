@@ -1,7 +1,7 @@
 # Buildive: An Interactive Build Template
 
 ## Getting Started
-A dead simple template for building interactives. All build tasks are handled with [npm](https://github.com/npm/npm) scripts inside `package.json`. Source files are kept in src/ while build files are kept in public/. To keep things tidy and modular, this template is designed with [Browserify](https://github.com/substack/node-browserify#usage) and [Sass](https://github.com/sass/sass) in mind and has a directory structure meant to reinforce modular code.
+A dead simple template for building interactives. All build tasks are handled with [npm](https://github.com/npm/npm) scripts inside `package.json`. Source files are kept in src/ while build files are kept in public/. To keep things tidy and modular, this template is designed with [Browserify](https://github.com/substack/node-browserify#usage), [Sass](https://github.com/sass/sass) and [Mustache](https://github.com/janl/mustache.js/) in mind and has a directory structure meant to reinforce modular code.
 
 ### Build Setup
 - make sure you have [node and the latest npm](https://docs.npmjs.com/getting-started/installing-node) installed
@@ -12,21 +12,21 @@ export RSA_KEY="[path/to/rsa/key]"
 export STAGE_NAME="[username for servers]"
 export STAGE_IP="[IP address of staging server]"
 ```
-- *(optional)* Install all development dependencies globally on machine to keep the node_modules directory smaller: `npm install -g browserify uglify-js watchify minifier node-sass http-server livereload`, otherwise run `npm install` during Project Setup
+- *(optional)* Install all development dependencies globally on machine to keep the node_modules directory smaller: `npm install -g browserify uglify-js watchify minifier node-sass http-server livereload watch`, otherwise run `npm install` during Project Setup
 - Set up bash build script for convenience: `cp buildive /usr/local/bin/`
 
 ### Project Setup
 - run `buildive <interactive name>`
 - Open `package.json` and change name, description, keyword, staging directory
-- Open `public/index.html` and change meta data
+- Edit the `meta` object in `package.json`. This data is used in the default `header.mustache` template.
 - run `npm install` if you did not install development dependencies globally
 
 ### Develop
 - Install project dependencies (e.g. `npm install d3 react underscore --save`)
 - Start local server / livereload : `npm start`
 - Use [CommonJS](http://requirejs.org/docs/commonjs.html) syntax to import scripts into `src/js/index.js`
-  - `require( './my-class.js' )`
 - @import .scss files into `src/sass/index.scss`
+- Using mustache's partials syntax (`{{> partial_name }}`), add partials to `src/views/index.mustache` (note: partials must have a unique filenames across partials/ folder and have .mustache extension)
 
 ### Build:
   - `npm run build`
@@ -71,3 +71,4 @@ export STAGE_IP="[IP address of staging server]"
 | `npm run browserify` | build js files |
 | `npm run sass` | build sass files |
 | `npm run minify` | minify js and sass files |
+| `npm run mustache` | Mustache's CLI doesn't add partials recursively. Hack to retrieve all partials, insert package.json's meta data and render HTML to `public/index.html`  |
