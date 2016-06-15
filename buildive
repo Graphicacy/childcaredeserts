@@ -6,4 +6,5 @@ git remote remove origin
 git remote add core https://github.com/amprog/buildive.git
 mkdir docs
 mkdir public/data
+sed -i "" "2s/buildive/$1/; 3s/[0-9]*\.[0-9]*\.[0-9]*/1\.0\.0/; 4s/:\ \".*\"/:\ \"\"/" package.json
 rm buildive
