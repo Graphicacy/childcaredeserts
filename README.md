@@ -65,7 +65,9 @@ export STAGE_IP="[IP address of staging server]"
 | `npm run connect` | start server at `public/` |
 | `npm run build` | for production-ready codes, adds minification |
 | `npm run connect-stage` | connect to staging server via ssh (must have RSA_KEY, STAGE_NAME, and STAGE_IP defined as environment variables ) |
-| `npm run push-stage` | copies `public/` to staging server to a folder in `interactives/projects/2016/` with the package's name (e.g interactives/projects/2016/buildive/), to use a different directory, change the `stage` config in `package.json` (must have RSA_KEY, STAGE_NAME, and STAGE_IP defined as environment variables ) |
+| `npm run preview:push` | copies `public/` to staging server to a folder in `interactives/preview/2016/version/` with the package's name (e.g interactives/preview/2016/buildive/v1.0.0/), to use a different directory, change the `previewDir` config in `package.json` (must have RSA_KEY, STAGE_NAME, and STAGE_IP defined as environment variables ) |
+| `npm run preview:push:patch` | same as preview:push except runs `npm version patch` |
+| `npm run preview:open` | open most recent preview in browser |
 | `npm run watch` | watch js and sass files |
 | `npm run browserify` | build js files |
 | `npm run sass` | build sass files |
