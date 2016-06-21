@@ -5,3 +5,64 @@
 @import 'modules/core/normalize';
 // remove this line if you do not want to use CAP styles
 @import 'modules/core/style';
+$blue: #374C67;
+
+#map{
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:100%;
+  z-index: 0;
+}
+
+#left-pane{
+  position: absolute;
+  background: rgba( $blue, 0.85 );
+  top: 0;
+  bottom: 0;
+  width: 20%;
+  z-index: 100;
+}
+
+.stateNav{
+  padding: 10px;
+  color: #fefefe;
+}
+
+ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.stateNav li{
+  cursor: pointer;
+  padding: 5px;
+  background: rgba( #fefefe, 0.15 );
+  border: 1px solid rgba( #000, 0.15 );
+}
+
+.stateNav li:hover{
+  background: rgba( #fefefe, 0.65 );
+  color: $blue;
+}
+
+#center-data{
+  padding: 5px;
+  margin: 10px;
+  color: #fefefe;
+  background: rgba( #fefefe, 0.15 );
+  margin-top: 20px;
+}
+
+h3,h4,h5{
+  margin: 5px 0px 5px 0px;
+}
+
+#center-data h3{
+  height: 60px;
+  line-height: 1.2em;
+  margin-bottom: 25px;
+  margin-top: 15px;
+  border-bottom: 1px solid #fefefe;
+}
