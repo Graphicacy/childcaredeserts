@@ -1,0 +1,80 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'csv'
+
+def merge target, source
+  source.each do |k,v|
+    target[k] = v
+  end
+end
+
+def readCSV path
+  f = File.read( path ).encode!("UTF-8", "UTF-8", :invalid => :replace)
+  CSV.new( f, :headers => true, :header_converters => :symbol, :converters => :all).to_a.map {|row| row.to_hash }
+end
+
+z = File.read( 'docs/zips.json' )
+topo = JSON.parse(z, :symbolize_names => true )
+zips = topo[:objects][:zips][:geometries]
+
+## mapbox does not allow arrays in tilesets
+# centers = readCSV( 'docs/centers.csv' )
+census = readCSV( 'docs/census.csv' )
+irs = readCSV( 'docs/irs.csv' )
+population = readCSV( 'docs/population.csv' )
+
+zcta = {}
+
+zips.each do |zip|
+  z = zip[:properties][:zcta].to_s
+  zcta[z] = {}
+end
+
+## mapbox does not allow arrays in tilesets
+# centers.each do |c|
+#   z = c[:zip].to_s
+#   zcta[z] = {} if zcta[z].nil?
+#   zcta[z][:centers] = [] if zcta[z][:centers].nil?
+#   zcta[z][:centers].push( c );
+# end
+
+census.each do |c|
+  z = c[:zip].to_s
+  unless zcta[z].nil?
+    zcta[z][:black] = c[:populationraceblack]
+    zcta[z][:latino] = c[:populationracelatino]
+  end
+end
+
+irs.each do |i|
+  z = i[:zipcode].to_s
+  unless zcta[z].nil?
+    if i[:numdep] > 0
+      zcta[z][:meanearnings] = i[:a00100] / i[:numdep]
+    else
+      zcta[z][:meanearnings] = 0
+    end
+  end
+end
+
+population.each do |p|
+  z = p[:zcta5].to_s
+  unless zcta[z].nil?
+    zcta[z][:density] = p[:population] / p[:landsqmi]
+  end
+end
+
+zips.each do |z|
+  zcta.each do |k,v|
+    if k == z[:properties][:zcta].to_s
+      merge z[:properties], v
+    end
+  end
+end
+
+File.open( 'docs/childcaredesert_zips.json', "w") do |f|
+  f.write( topo.to_json )
+end
+
+puts 'DONE!'
