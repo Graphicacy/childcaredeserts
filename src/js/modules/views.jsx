@@ -1,11 +1,11 @@
 import { Map } from './map';
-
+import { default as GeometryApi } from '../api/GeometryApi';
 var d3 = require( 'd3' );
 var topojson = require( 'topojson' );
 
 var React = require( 'react' );
 var ReactDOM = require( 'react-dom' );
-var $ = require('jquery');
+// var $ = require('jquery');
 
 var states = [
   { code: 'GA', name: 'Georgia', center: [-84.41,32.73], zoom: 6.95478, FP: '13' },
@@ -83,33 +83,35 @@ var CenterData = React.createClass({
 });
 
 function init(){
-
-  $.getJSON( 'data/childcenters.geojson', centers => {
-    centers.features.forEach( c => {
-      let p = c.properties;
-      p.tier = +p.tier;
-    })
-
-    $.getJSON( 'data/states.json', statesPolys => {
-      ReactDOM.render(
-        <StateNav data={states} />,
-        document.getElementById( 'state-selection' )
-      );
-      let centerView = ReactDOM.render(
-        <CenterData />,
-        document.getElementById( 'center-data' )
-      );
-
-      d3.json( 'data/14states--simplified2.json', zips => {
-          console.log( zips );
-          let zipcodes = topojson.feature( zips, zips.objects["14states--simplified2"] );
-          map = new Map( centers, statesPolys, states[0], centerView, zipcodes );
-      });
-
-
-
+  console.log('hello');
+  GeometryApi.fetchStateGeometry()
+    .then(results => {
+      console.log(results);
     });
-  });
+  // $.getJSON( 'data/childcenters.geojson', centers => {
+  //   centers.features.forEach( c => {
+  //     let p = c.properties;
+  //     p.tier = +p.tier;
+  //   })
+
+  //   $.getJSON( 'data/states.json', statesPolys => {
+  //     ReactDOM.render(
+  //       <StateNav data={states} />,
+  //       document.getElementById( 'state-selection' )
+  //     );
+  //     let centerView = ReactDOM.render(
+  //       <CenterData />,
+  //       document.getElementById( 'center-data' )
+  //     );
+
+  //     d3.json( 'data/14states--simplified2.json', zips => {
+  //         console.log( zips );
+  //         let zipcodes = topojson.feature( zips, zips.objects["14states--simplified2"] );
+  //         map = new Map( centers, statesPolys, states[0], centerView, zipcodes );
+  //     });
+
+  //   });
+  // });
 
 }
 
