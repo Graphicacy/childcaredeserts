@@ -23,10 +23,9 @@ const EXPECTED_GEO_JSON_FEATURE_COLLECTION_PROPERTIES =  {
     if (everyPropertyIsValid === false) {
       return false;
     }
-    let uniqueItemsById = _(features)
-      .map(f => f.properties[ID_FIELD])
-      .uniq()
-      .value();
+    let uniqueItemsById = _.flow(
+      _.map(f => f.properties[ID_FIELD]),
+      _.uniq)(features);
     let everyPropertyIdIsUnique = uniqueItemsById && features && uniqueItemsById.length === features.length;
 
     return everyPropertyIsValid && everyPropertyIdIsUnique;

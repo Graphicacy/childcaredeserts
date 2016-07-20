@@ -17,7 +17,6 @@ export default class BaseApi {
   }
 
   get (endpoint, config) {
-    console.log(endpoint);
     return this.httpClient.get(endpoint)
       .then((response) => {
         return response.data;
