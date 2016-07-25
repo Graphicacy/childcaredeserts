@@ -1,3 +1,12 @@
-import { init } from './modules/views.jsx';
+import 'babel-polyfill';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import RootContainer from './ui/Root.container';
+import configureStore from './ui/configureStore';
 
-init();
+const store = configureStore({});
+
+ReactDOM.render(
+  <RootContainer store={store} />,
+  document.getElementById('root')
+);

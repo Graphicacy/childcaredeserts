@@ -1,65 +1,129 @@
 // @import sass modules
 
-@import 'modules/core/colors';
-@import 'modules/core/mixins';
-@import 'modules/core/normalize';
+@import "modules/core/colors";
+@import "modules/core/mixins";
+@import "modules/core/normalize";
+
+// TODO: pull from `/node_modules` directly.
+@import "modules/vendor/mapbox-gl";
+
 // remove this line if you do not want to use CAP styles
-@import 'modules/core/style';
+@import "modules/core/style";
+
 $blue: #374C67;
 
-#map{
-  position:absolute;
-  top:0;
-  bottom:0;
-  width:100%;
-  z-index: 0;
+.app-container {
+  background-color: red;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
 }
 
-#left-pane{
+.sidebar-container {
+  background-color: green;
+  width: 300px;
+  overflow: auto;
+}
+
+.map-container {
+  background-color: blue;
+  flex-grow: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.map {
   position: absolute;
-  background: rgba( $blue, 0.85 );
   top: 0;
   bottom: 0;
-  width: 20%;
-  z-index: 100;
+  width: 100%;
+  background-color: orange;
 }
 
-.stateNav{
+// DEBUGGING CLASSES TO HELP DETERMINE
+// CORRECT SIZE OF MAPBOX GL MAP.
+.ll {
+  background-color: white;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+.ur {
+  background-color: white;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.lr {
+  background-color: white;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.ul {
+  background-color: white;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+// #map{
+//   position:absolute;
+//   top:0;
+//   bottom:0;
+//   width:100%;
+//   z-index: 0;
+// }
+
+// #left-pane{
+//   position: absolute;
+//   background: rgba( $blue, 0.85 );
+//   top: 0;
+//   bottom: 0;
+//   width: 20%;
+//   z-index: 100;
+// }
+
+.stateNav {
   padding: 10px;
   color: #fefefe;
 }
 
-ul{
+ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.stateNav li{
+.stateNav li {
   cursor: pointer;
   padding: 5px;
-  background: rgba( #fefefe, 0.15 );
-  border: 1px solid rgba( #000, 0.15 );
+  background: rgba(#fefefe, 0.15);
+  border: 1px solid rgba(#000, 0.15);
 }
 
-.stateNav li:hover{
-  background: rgba( #fefefe, 0.65 );
+.stateNav li:hover {
+  background: rgba(#fefefe, 0.65);
   color: $blue;
 }
 
-#center-data{
+#center-data {
   padding: 5px;
   margin: 10px;
   color: #fefefe;
-  background: rgba( #fefefe, 0.15 );
+  background: rgba(#fefefe, 0.15);
   margin-top: 20px;
 }
 
-h3,h4,h5{
+h3, h4, h5 {
   margin: 5px 0px 5px 0px;
 }
 
-#center-data h3{
+#center-data h3 {
   height: 60px;
   line-height: 1.2em;
   margin-bottom: 25px;
