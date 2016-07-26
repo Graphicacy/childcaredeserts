@@ -19,8 +19,6 @@ const StateItemContainer = React.createClass( {
     return (
       <div onClick={this.onStateClick}>
         <h6 data-is-selected={isSelected} data-id={this.props.stateItem.STATE} data-name={this.props.stateItem.NAME} >{this.props.stateItem.NAME}</h6>
-        <div>Is Selected: {isSelected}</div>
-        <div>Is Inactive: {isInactive}</div>
       </div>
     );
   }

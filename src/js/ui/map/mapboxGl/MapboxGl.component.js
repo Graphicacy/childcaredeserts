@@ -8,14 +8,13 @@ const MapboxGlComponent = React.createClass( {
     camera: PropTypes.object.isRequired,
     settings: PropTypes.object.isRequired,
     ground: PropTypes.object.isRequired,
-    layers: PropTypes.object.isRequired,
+    layers: PropTypes.array.isRequired,
     elementId: PropTypes.string.isRequired,
     onMapInitialized: PropTypes.func.isRequired,
     onMapReadyToDisplay: PropTypes.func.isRequired,
     isReadyToInsertStateLayers: PropTypes.bool.isRequired,
     onFeatureClick: PropTypes.func,
-    onFeatureHover: PropTypes.func,
-    mapLayers: PropTypes.object,
+    onFeatureHover: PropTypes.func
   },
 
   componentDidMount() {
@@ -35,17 +34,18 @@ const MapboxGlComponent = React.createClass( {
     // disable useless things like rotate, etc
     this.map.touchZoomRotate.disableRotation();
     // initialize to our bounds.
+    setTimeout(() => {this.map.resize();}, 800);
     if (this.props.camera.bounds != null) {
       // overpad the map just a bit, and an instant later, zoom out, set max bounds, and zoom back in.
-      this.map.fitBounds(this.props.camera.bounds, {linear: false, padding: 20, speed: 100});
+      this.map.fitBounds(this.props.camera.bounds, {linear: false, padding: 20, speed: 1000});
       setTimeout(() => {
         let zoomedOut = this.map.getZoom() * 0.80;
         this.map.setZoom(zoomedOut);
         let currentBounds = this.map.getBounds();
         this.map.setMaxBounds(currentBounds);
         this.map.fitBounds(this.props.camera.bounds, {linear: false, padding: 20, speed: 100});
-      }, 100)
-    }
+      }, 1000)
+    } 
     
     this.map.once('style.load', () => {
       if (this.props.onMapInitialized != null) {
@@ -60,6 +60,8 @@ const MapboxGlComponent = React.createClass( {
     });
   },
 
+
+
   render () {
     if (this.props.isReadyToInsertStateLayers === false) {
       return null;
@@ -67,19 +69,25 @@ const MapboxGlComponent = React.createClass( {
     
     return (
       <div>
-      {(this.props.isReadyToInsertStateLayers) && 
+      {
+        (this.props.isReadyToInsertStateLayers) && 
         <div>
-          <MapboxGlComponentLayer 
-            source={this.props.mapLayers.source} 
-            layers={this.props.mapLayers.layers}
-            onFeatureClick={this.props.onFeatureClick}
-            onFeatureHover={this.props.onFeatureHover}
-            map={this.map} />
+          {this.props.layers.map((mapLayer, index) => {
+            return (<MapboxGlComponentLayer key={index}
+              source={mapLayer.source} 
+              layers={mapLayer.layers}
+              onFeatureClick={this.props.onFeatureClick}
+              onFeatureHover={this.props.onFeatureHover}
+              map={this.map} />
+            );
+          })
+        }
           <MapboxGlComponentCamera 
             camera={this.props.camera}
             map={this.map}/>
         </div>
-        }
+      }
+
       </div>)
   }
 });

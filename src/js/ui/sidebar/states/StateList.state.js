@@ -1,6 +1,7 @@
 import { createAction, handleActions } from 'redux-actions';
 import _ from 'lodash';
-import GeometryApi from '../../../api/GeometryApi';
+import ChildCareCentersApi from '../../../api/ChildCareCentersApi';
+import StatesApi from '../../../api/StatesApi';
 import * as UiLoadingStatuses from '../../constants/loadingStatus';
 import { resetMap } from '../../map/Map.state.interactivity';
 export const STATE_LIST_LOAD_STATES = 'STATE_LIST_LOAD_STATES';
@@ -16,6 +17,7 @@ export const DEFAULT_STATE_LIST_STATE = {
     geoJson: null,
     selectedStateId: null
   },
+  childCareCenters: null,
   status: UiLoadingStatuses.LOADING
 };
 
@@ -29,9 +31,15 @@ export const resetStateListSelection = createAction(STATE_LIST_CLEAR_SELECTION);
 export const fetchStates = () => {
   return (dispatch) => {
     dispatch(loadStates());
-    return GeometryApi.fetchStateGeometry()
-      .then(areas => {
-        dispatch(setStateLoadingSuccess({geoJson: areas}));
+    let loadingStates = StatesApi.fetchStatesGeometry();
+    let loadingChildCareCenters = ChildCareCentersApi.fetchChildCareCenters();
+
+    return Promise.all([loadingStates, loadingChildCareCenters])
+      .then(results => {
+        let areas = results[0];
+        let childCareCenters = results[1];
+
+        dispatch(setStateLoadingSuccess({geoJson: areas, childCareCenters}));
         return areas;
       })
       .catch(e => {
@@ -73,6 +81,7 @@ export const stateListReducers = {
     newState.status = UiLoadingStatuses.LOADING
 
     newState.states = {geoJson: null, selectedStateId: null};
+    newState.childCareCenters = null;
     return newState;
   },
   STATE_LIST_LOAD_STATES_SUCCESS: (state, { payload }) => {
@@ -80,6 +89,7 @@ export const stateListReducers = {
     newState.status = UiLoadingStatuses.SUCCESS;
 
     newState.states = {geoJson: payload.geoJson, selectedStateId: null}; 
+    newState.childCareCenters = payload.childCareCenters;
     return newState;
   },
   STATE_LIST_LOAD_STATES_FAILURE: (state, { payload }) => {
@@ -87,6 +97,7 @@ export const stateListReducers = {
     newState.status = UiLoadingStatuses.FAILURE;
 
     newState.states = {geoJson: null, selectedStateId: null};
+    newState.childCareCenters = childCareCenters;
     return newState;
   },
   STATE_LIST_CLEAR_SELECTION: (state, { payload }) => {

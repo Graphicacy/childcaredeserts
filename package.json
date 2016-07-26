@@ -46,7 +46,8 @@
     "react-redux": "^4.4.0",
     "lodash": "^4.13.1",
     "turf": "^3.0.0",
-    "topojson": "^1.6.26"
+    "topojson": "^1.6.26",
+    "d3-dsv": "^1.0.0"
   },
   "devDependencies": {
     "babel-plugin-lodash": "^3.2.4",
