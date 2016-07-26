@@ -10,7 +10,7 @@ import _ from 'lodash';
 // ------------------------------------
 export const MAP_GROUND_SET_MAP_STYLE = 'MAP_GROUND_SET_MAP_STYLE';
 
-const LIGHT_MAP_NAME = 'mapbox://styles/cap/cilwksqa900359mm3ge1ui5yf';
+const LIGHT_MAP_NAME = 'mapbox://styles/cap/ciqxz8ptq0007bonnm0lmwz45';
 
 const LIGHT_MAP = {
   name: 'Light',

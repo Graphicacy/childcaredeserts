@@ -17,7 +17,7 @@ export const setFilter = createAction(FILTER_SET_FILTER);
 
 export const filterActions = {
   resetFilter,
-  setFilter
+  setFilter,
 };
 
 // ------------------------------------

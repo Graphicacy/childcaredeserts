@@ -13,8 +13,7 @@ const mapStateToProps = (state) => {
     layers: getMapLayers(state),
     settings: getMapSettings(state),
     interactivity: getMapInteractivity(state),
-    isReadyToInsertStateLayers: getIsReadyToInsertStateLayers(state),
-    mapLayers: getMapLayers(state)
+    isReadyToInsertStateLayers: getIsReadyToInsertStateLayers(state)
   };
   return obj;
 };
@@ -55,7 +54,6 @@ const MapContainer = React.createClass( {
           onMapInitialized={this.onMapIsInitialized}
           onMapReadyToDisplay={this.onMapIsReadyToDisplay}
           isReadyToInsertStateLayers={this.props.isReadyToInsertStateLayers}
-          mapLayers={this.props.mapLayers}
           onFeatureClick={this.onFeatureClick}
           onFeatureHover={this.onFeatureHover}
           />
