@@ -5,7 +5,7 @@ import {
 from 'redux-actions';
 import turf from 'turf-bbox';
 import _ from 'lodash';
-import { getSelectedState } from '../sidebar/Sidebar.selectors';
+import { getSelectedStateProperties } from '../sidebar/Sidebar.selectors';
 import { mapCameraActions, BOUNDING_BOX_OF_LOWER_48_STATES } from './Map.state.camera';
 // ------------------------------------
 // Constants
@@ -34,7 +34,7 @@ export const setIsMapInitialized = createAction(MAP_INTERACTIVITY_IS_MAP_INITIAL
 
 export const selectMapFeature = (stateId) => {
   return (dispatch, getState) => {
-    let selectedState = getSelectedState(getState());
+    let selectedState = getSelectedStateProperties(getState());
     let boundingBox = selectedState.bbox;
     
     let newCorners = [

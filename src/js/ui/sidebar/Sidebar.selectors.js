@@ -17,11 +17,13 @@ export const getStatesIsLoading = state => state.sidebar.stateList.status === Ui
 export const getStatesIsSuccess = state => state.sidebar.stateList.status === UiLoadingStatuses.SUCCESS;
 export const getStatesIsFailure = state => state.sidebar.stateList.states.status === UiLoadingStatuses.FAILURE;
 export const getSelectedStateId = state => state.sidebar.stateList.states.selectedStateId;
+export const getStateDictionary = state => state.sidebar.stateList.dictionary;
 // This function is not considered safe to use by React UI code directly.
 // Please use `getStatesGeoJson` instead.
 export const getGeoJson = state => state.sidebar.stateList.states.geoJson;
 
-export const getChildCareCenters = state => {console.log(state); return state.sidebar.stateList.childCareCenters};
+export const getChildCareCenters = state => state.sidebar.stateList.childCareCenters;
+export const getChildCareCentersGeoJson = state => state.sidebar.stateList.childCareCentersGeoJson;
 
 export const getIsDataReady = createSelector(
   [getStatesIsSuccess], (isSuccess) => {
@@ -33,49 +35,11 @@ export const getStatesGeoJson = createSelector([getIsDataReady, getGeoJson], (is
   if (isDataReady === false) {
     return null;
   }
-  console.log(isDataReady);
   return !geoJson ? emptyGeoJson : geoJson;
 });
 
-//this will return an array of geoJsons - one for each state in the array of childcare centers.
-export const getChildCareCentersGeoJsonDictionary = createSelector([getIsDataReady, getChildCareCenters], (isDataReady, childCareCenters) => {
-  if (isDataReady === false) {
-    return null;
-  }
-  // convert our centers to GeoJson Features
-  let points = childCareCenters.map(childCareCenter => {
-    let { latitude, longitude } = childCareCenter;
-    let point = turfPoint([longitude, latitude], childCareCenter);
-    return point;
-  });
-
-  let centersByStateDictionary = _.reduce(points, (hash, childCareCenterFeature) => {
-    let id = childCareCenterFeature.properties.state;
-
-    // check to see if the entry already exists in our dictionary...
-    if (hash[id] == null) {
-      // add it to our dictionary
-      hash[id] = {
-          "type": "FeatureCollection",
-          "features": []
-      };
-    }
-
-    hash[id].features.push(childCareCenterFeature);
-    return hash;
-  }, {});
-
-  let allChildCareCenters = {
-          "type": "FeatureCollection",
-          "features": points
-      };
-
-  // TODO: perhaps sample this one down?  
-  // DOWNSAMPLING BY 1/5th
-  centersByStateDictionary.allChildCareCenters = turfSample(allChildCareCenters, Math.floor(points.length / 2));
-  
-  return centersByStateDictionary;
-});
+// this is static, by the way.
+let downsampledChildCentersGeoJson = null;
 
 export const getDataIsLoading = createSelector(
   [getStatesIsLoading], (isLoading) => {
@@ -84,23 +48,44 @@ export const getDataIsLoading = createSelector(
 );
 
 const emptyArray = [];
-export const getStatesList = createSelector([getStatesGeoJson], (geoJson) => {
-  if (geoJson == null) {
+export const getStatesList = createSelector([getStateDictionary], (dictionary) => {
+  if (dictionary == null) {
     return emptyArray;
   }
 
-  if (_.isEmpty(geoJson.features)) {
-    return emptyArray;
-  }
-
-  let properties = _.map(geoJson.features, 'properties');
+  let properties = _.values(dictionary);
   return properties;
 });
 
-export const getSelectedState = createSelector([getStatesList, getSelectedStateId], (stateList, selectedStateId) => {
-  if (selectedStateId == null) {
+export const getSelectedState = createSelector([getStateDictionary, getSelectedStateId], (dictionary, selectedStateId) => {
+  if (selectedStateId == null || dictionary == null) {
+    return null;
+  }
+  return dictionary[selectedStateId];
+});
+
+export const getSelectedStateProperties = createSelector([getSelectedState], (selectedState) => {
+  if (selectedState == null) {
+    return null;
+  }
+  return selectedState.stateProperties;
+});
+
+//this will return an array of geoJsons - one for each state in the array of childcare centers.
+export const getChildCareCentersGeoJsonDictionary = createSelector([getIsDataReady, getChildCareCentersGeoJson, getSelectedState], 
+    (isDataReady, childCareCentersGeoJson, selectedState) => {
+  if (isDataReady === false) {
     return null;
   }
 
-  return _.find(stateList, state => state.STATE === selectedStateId);
+  // DOWNSAMPLING BY 1/3rd
+  if (downsampledChildCentersGeoJson == null) {
+    downsampledChildCentersGeoJson = turfSample(childCareCentersGeoJson, Math.floor(childCareCentersGeoJson.features.length / 3));
+  }
+
+  if (selectedState == null) {
+    return downsampledChildCentersGeoJson;
+  }
+
+  return selectedState.childCareCentersGeoJson;
 });

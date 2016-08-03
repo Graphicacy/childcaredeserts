@@ -1,24 +1,25 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import StateItemComponent from './StateItem.component';
+import StateItemComponent from './stateItem/StateItem.component';
 import { stateListActions } from './StateList.state';
-import { getSelectedState, getStatesList } from '../Sidebar.selectors';
+import { getSelectedStateProperties, getStatesList } from '../Sidebar.selectors';
 
 const mapStateToProps = (state) => {
   let stateList = getStatesList(state);
-  let selectedState = getSelectedState(state);
+  let selectedState = getSelectedStateProperties(state);
   let obj = {
     stateList,
     selectedState
   };
-
   return obj;
 };
 
 const StateListContainer = React.createClass( {
   propTypes: {
     stateList: PropTypes.array.isRequired,
-    selectedState: PropTypes.object
+    selectedState: PropTypes.object,
+
+    updateFilter: PropTypes.func.isRequired
   },
 
   onStateSelection(state) {
@@ -29,6 +30,10 @@ const StateListContainer = React.createClass( {
     this.props.resetSelection();
   },
 
+  onUpdateFilter (stateId, name, newMin, newMax) {
+    this.props.updateFilter(stateId, name, newMin, newMax);
+  },
+
   render () {
     return (
       <div>
@@ -37,8 +42,9 @@ const StateListContainer = React.createClass( {
           this.props.stateList.map(state => 
           {
             return ( <StateItemComponent 
-              key={state.STATE} 
-              stateItem={state} 
+              key={state.stateProperties.STATE} 
+              stateItem={state}
+              onUpdateFilter={this.onUpdateFilter}
               onStateSelected={this.onStateSelection}/>);
           }
         )
