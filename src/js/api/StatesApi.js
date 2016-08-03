@@ -1,7 +1,7 @@
 import BaseApi from './BaseApi';
 import { geometryValidator } from './validation/stateValidator';
 import topojson from 'topojson';
-export const ENDPOINT = '/data';
+export const ENDPOINT = 'data';
 import {default as bbox } from 'turf-bbox';
 import { tsvParse } from 'd3-dsv';
 import _ from 'lodash';
@@ -30,7 +30,7 @@ export class StatesApi extends BaseApi {
           ui_isInactive: false
         };
 
-        let fakeGeoJsonObject = { 
+        let fakeGeoJsonObject = {
           "type": "FeatureCollection",
           "features": []
         };
@@ -39,7 +39,7 @@ export class StatesApi extends BaseApi {
           fakeGeoJsonObject.features = [f];
           f.properties.bbox = bbox(fakeGeoJsonObject);
           let bounds = [
-            [f.properties.bbox[0], f.properties.bbox[1]], 
+            [f.properties.bbox[0], f.properties.bbox[1]],
             [f.properties.bbox[2], f.properties.bbox[3]]];
           f.properties.bounds = bounds;
           // attach UI-related code to the properties.

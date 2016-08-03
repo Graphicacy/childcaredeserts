@@ -1,7 +1,7 @@
 import BaseApi from './BaseApi';
 import { geometryValidator } from './validation/stateValidator';
 import topojson from 'topojson';
-export const ENDPOINT = '/data';
+export const ENDPOINT = 'data';
 import {default as bbox } from 'turf-bbox';
 import { tsvParse } from 'd3-dsv';
 import childCareValidator from './validation/childCareCenterValidator';
