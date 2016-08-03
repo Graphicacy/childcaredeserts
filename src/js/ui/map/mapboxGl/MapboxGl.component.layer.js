@@ -29,8 +29,9 @@ const MapboxGlComponentLayer = React.createClass( {
 
     // We should debounce our events to reduce load on CPU.
     this.proxyOnLayerMouseOver = _.debounce(this.onLayerMouseOver, DEBOUNCE_DELAY_MS, debounceOptions);
+    this.proxyOnUpdateLayerFilter = _.debounce(this.updateLayerFilter, 80, {maxWait: 130});
     this.props.layers
-      .filter(layer => layer.interactive)
+      .filter(layer => layer.definition.interactive)
       .forEach(layer => {
         // this line eventually just calls onLayerMouseOver
         // but without a ton of needless canvas queries.
@@ -55,8 +56,8 @@ const MapboxGlComponentLayer = React.createClass( {
 
   getInteractiveFeaturesOverPoint(point) {
     let interactiveLayerNames = this.props.layers
-      .filter(layer => layer.interactive)
-      .map(layer => layer.id);
+      .filter(layer => layer.definition.interactive)
+      .map(layer => layer.definition.id);
 
     var features = this.props.map.queryRenderedFeatures(point, { layers: interactiveLayerNames });
     return features;
@@ -74,6 +75,19 @@ const MapboxGlComponentLayer = React.createClass( {
     }
 
     this.source.setData(this.props.source.payload.data);
+
+    let layers = this.props.layers;
+    layers.forEach(layer => {
+      this.proxyOnUpdateLayerFilter(layer);
+    })
+  },
+
+  updateLayerFilter (layer) {
+    if (layer.definition.filter == null) {
+      return;
+    }
+
+    this.props.map.setFilter(layer.definition.id, layer.definition.filter);
   },
 
   onLayerClick(e) {
@@ -91,7 +105,7 @@ const MapboxGlComponentLayer = React.createClass( {
 
   addLayers (map, layers) {
     layers.forEach(layer => {
-      map.addLayer(layer);
+      map.addLayer(layer.definition, layer.insertBefore);
     });
   },
   render () {

@@ -4,6 +4,7 @@ import topojson from 'topojson';
 export const ENDPOINT = '/data';
 import {default as bbox } from 'turf-bbox';
 import { tsvParse } from 'd3-dsv';
+import _ from 'lodash';
 
 const STATE_FILE_NAME = 'states.json';
 
@@ -33,7 +34,6 @@ export class StatesApi extends BaseApi {
           "type": "FeatureCollection",
           "features": []
         };
-
         states.features.forEach(f => {
           // attach the bounding box to the properties
           fakeGeoJsonObject.features = [f];

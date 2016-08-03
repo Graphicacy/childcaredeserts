@@ -1,6 +1,7 @@
-import 'babel-polyfill';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'babel-polyfill';
 import RootContainer from './ui/Root.container';
 import configureStore from './ui/configureStore';
 

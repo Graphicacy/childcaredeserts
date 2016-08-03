@@ -10,14 +10,19 @@ export const STATE_LIST_LOAD_STATES_SUCCESS = 'STATE_LIST_LOAD_STATES_SUCCESS';
 export const STATE_LIST_LOAD_STATES_FAILURE = 'STATE_LIST_LOAD_STATES_FAILURE';
 export const STATE_LIST_UPDATE_STATE_SELECTION = 'STATE_LIST_UPDATE_STATE_SELECTION';
 export const STATE_LIST_CLEAR_SELECTION = 'STATE_LIST_CLEAR_SELECTION';
+export const STATE_LIST_UPDATE_FILTER = 'STATE_LIST_UPDATE_FILTER';
+import { default as turfPoint } from 'turf-point';
+import { default as turfSample } from 'turf-sample';
 
 // DEFAULT STATE
 export const DEFAULT_STATE_LIST_STATE = {
   states: {
+    dictionary: {},
     geoJson: null,
     selectedStateId: null
   },
   childCareCenters: null,
+  childCareCentersGeoJson: null,
   status: UiLoadingStatuses.LOADING
 };
 
@@ -27,6 +32,9 @@ export const setStateLoadingSuccess = createAction(STATE_LIST_LOAD_STATES_SUCCES
 export const setStateLoadingFailure = createAction(STATE_LIST_LOAD_STATES_FAILURE);
 export const updateStateSelection = createAction(STATE_LIST_UPDATE_STATE_SELECTION);
 export const resetStateListSelection = createAction(STATE_LIST_CLEAR_SELECTION);
+export const updateFilter = createAction(STATE_LIST_UPDATE_FILTER, (stateId, filterId, min, max) => {
+  return {stateId, filterId, min, max};
+});
 
 export const fetchStates = () => {
   return (dispatch) => {
@@ -43,6 +51,7 @@ export const fetchStates = () => {
         return areas;
       })
       .catch(e => {
+        console.log(e);
         dispatch(setStateLoadingFailure(e));
       });
   };
@@ -69,7 +78,8 @@ export const resetSelection = () => {
 export const stateListActions = {
   fetchStates,
   selectState,
-  resetSelection
+  resetSelection,
+  updateFilter
 };
 
 // ------------------------------------
@@ -82,22 +92,30 @@ export const stateListReducers = {
 
     newState.states = {geoJson: null, selectedStateId: null};
     newState.childCareCenters = null;
+    newState.dictionary  = null;
+    newState.childCareCentersGeoJson = null;
     return newState;
   },
   STATE_LIST_LOAD_STATES_SUCCESS: (state, { payload }) => {
     let newState = { ...state };
     newState.status = UiLoadingStatuses.SUCCESS;
-
+    let childCareDictionary = createChildCareCentersDictionary(payload.childCareCenters);
+    let stateDictionary = createStateDictionary(payload.geoJson, childCareDictionary);
     newState.states = {geoJson: payload.geoJson, selectedStateId: null}; 
+    newState.dictionary = stateDictionary;
     newState.childCareCenters = payload.childCareCenters;
+    newState.childCareCentersGeoJson = childCareDictionary.allChildCareCenters
     return newState;
   },
   STATE_LIST_LOAD_STATES_FAILURE: (state, { payload }) => {
+    console.log('FAILURE');
     let newState = { ...state };
     newState.status = UiLoadingStatuses.FAILURE;
 
     newState.states = {geoJson: null, selectedStateId: null};
-    newState.childCareCenters = childCareCenters;
+    newState.childCareCenters = null;
+    newState.dictionary  = null;
+    newState.childCareCentersGeoJson = null;
     return newState;
   },
   STATE_LIST_CLEAR_SELECTION: (state, { payload }) => {
@@ -121,8 +139,6 @@ export const stateListReducers = {
       return newState;
     }
 
-    newState.states.selectedStateId = payload.STATE;
-
     let selectedUiState = {
       ui_isSelected: true,
       ui_isInactive: false
@@ -133,6 +149,7 @@ export const stateListReducers = {
       ui_isInactive: true
     };
 
+    // just update the properties, rather than creating anew GeoJSON object.
     let newFeatures = newState.states.geoJson.features.map(f => {
       let isSelected = f.properties.STATE === payload.STATE;
       let mixedObject = isSelected ? selectedUiState : deselectedUiState;
@@ -141,9 +158,116 @@ export const stateListReducers = {
     });
 
     newState.states.geoJson.features = newFeatures;
-    newState.states = {...newState.states, ...{ selectedStateId: payload.STATE }};
+    newState.states = {...newState.states, ...{ selectedStateId: +payload.STATE }};
+    return newState;
+  },
+  STATE_LIST_UPDATE_FILTER: (state, { payload }) => {
+    let { stateId, filterId, min, max } = payload;
+
+    // find sought filter.
+    if (state.dictionary == null) {
+      return state;
+    }
+
+    let soughtState = state.dictionary[stateId];
+
+    // remap the filters - we must create a NEW array rather than
+    // mutate an item in the old array.
+    soughtState.filters = soughtState.filters.map((filter, index) => {
+      if (filter.name !== filterId) {
+        return {...filter};
+      }
+      filter.currentMin = min;
+      filter.currentMax = max;
+      return {...filter};
+    });
+
+    state.dictionary = {...state.dictionary};
+    let newState = { ...state };
     return newState;
   }
 };
+
+const createStateDictionary = (stateGeoJson, childCareDictionary) => {
+  // TODO: HUGE I8N PROBLEM HERE.
+  // Consider spanish, french, german?
+  const SOUGHT_CHILD_CARE_PROPERTIES = [
+    { soughtProperty: 'black', name: 'Black' }, // alt: African American ???????
+    { soughtProperty: 'latino', name: 'Latino' }, // alt: Latin@ ???????
+    { soughtProperty: 'meanearnin', name: 'Mean Earnings' },
+    { soughtProperty: 'density', name: 'Density' }
+  ];
+
+  try {
+    let stateProperties = _.map(stateGeoJson.features, 'properties');
+    let shallowCopy = _.clone(stateProperties);
+    let stateDictionary = _.reduce(shallowCopy, (hash, stateProperties) => {
+      let id = parseInt(stateProperties.STATE);
+      hash[id] = {id};
+      console.log('id:', id);
+      hash[id].stateProperties = stateProperties;
+
+      // while we're here we may as well add the childCare stuff too
+      let childCareGeoJson = childCareDictionary[id];
+      hash[id].childCareCentersGeoJson = childCareGeoJson;
+      hash[id].filters = SOUGHT_CHILD_CARE_PROPERTIES.map(props => {
+        let childCareProperties = _.map(childCareGeoJson.features, 'properties');
+        let filterObject = createFilterObject(childCareProperties, props.soughtProperty, props.name);
+        return filterObject;
+      })
+      return hash;
+    }, {});
+
+    return stateDictionary;
+  } catch (error) {
+    console.log(error);
+    return {};
+  }
+};
+
+const createFilterObject = (array, soughtProperty, name) => {
+  let max = _.max(_.map(array, soughtProperty));
+  return {
+    min: 0,
+    max,
+    currentMin: 0,
+    currentMax: max,
+    name,
+    id: soughtProperty
+  };
+}
+
+const createChildCareCentersDictionary = (childCareCenters) => {
+  // convert our centers to GeoJson Features
+  let points = childCareCenters.map(childCareCenter => {
+    let { latitude, longitude } = childCareCenter;
+    let point = turfPoint([longitude, latitude], childCareCenter);
+    return point;
+  });
+
+  let centersByStateDictionary = _.reduce(points, (hash, childCareCenterFeature) => {
+    let id = childCareCenterFeature.properties.state;
+
+    // check to see if the entry already exists in our dictionary...
+    if (hash[id] == null) {
+      // add it to our dictionary
+      hash[id] = {
+          "type": "FeatureCollection",
+          "features": []
+      };
+    }
+
+    hash[id].features.push(childCareCenterFeature);
+    return hash;
+  }, {});
+
+  let allChildCareCenters = {
+          "type": "FeatureCollection",
+          "features": points
+      };
+
+  centersByStateDictionary.allChildCareCenters = allChildCareCenters;
+  return centersByStateDictionary;
+}
 
 export default handleActions(stateListReducers, DEFAULT_STATE_LIST_STATE);

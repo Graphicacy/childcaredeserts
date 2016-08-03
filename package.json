@@ -36,18 +36,18 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.9.1",
+    "d3-dsv": "^1.0.0",
+    "lodash": "^4.13.1",
     "mapbox-gl": "^0.21.0",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
+    "react-redux": "^4.4.0",
     "redux": "^3.3.1",
     "redux-actions": "^0.10.1",
     "redux-thunk": "^2.0.1",
     "reselect": "^2.2.1",
-    "react-redux": "^4.4.0",
-    "lodash": "^4.13.1",
-    "turf": "^3.0.0",
     "topojson": "^1.6.26",
-    "d3-dsv": "^1.0.0"
+    "turf": "^3.0.0"
   },
   "devDependencies": {
     "babel-plugin-lodash": "^3.2.4",

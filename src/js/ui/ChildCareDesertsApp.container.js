@@ -21,6 +21,8 @@ const ChildCareDesertsAppContainer = React.createClass( {
     this.props.fetchStates();
   },
 
+
+// <MapContainer/>
   render () {
     return (
       <div className='app-container'>
