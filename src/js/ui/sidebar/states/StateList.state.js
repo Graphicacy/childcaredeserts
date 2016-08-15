@@ -2,6 +2,7 @@ import { createAction, handleActions } from 'redux-actions';
 import _ from 'lodash';
 import ChildCareCentersApi from '../../../api/ChildCareCentersApi';
 import StatesApi from '../../../api/StatesApi';
+import ZipsApi from '../../../api/ZipsApi';
 import * as UiLoadingStatuses from '../../constants/loadingStatus';
 import { resetMap } from '../../map/Map.state.interactivity';
 export const STATE_LIST_LOAD_STATES = 'STATE_LIST_LOAD_STATES';
@@ -11,6 +12,7 @@ export const STATE_LIST_LOAD_STATES_FAILURE = 'STATE_LIST_LOAD_STATES_FAILURE';
 export const STATE_LIST_UPDATE_STATE_SELECTION = 'STATE_LIST_UPDATE_STATE_SELECTION';
 export const STATE_LIST_CLEAR_SELECTION = 'STATE_LIST_CLEAR_SELECTION';
 export const STATE_LIST_UPDATE_FILTER = 'STATE_LIST_UPDATE_FILTER';
+export const STATE_LIST_LOAD_ZIP_CODE_SUCCESS = 'STATE_LIST_LOAD_ZIP_CODE_SUCCESS';
 import { default as turfPoint } from 'turf-point';
 import { default as turfSample } from 'turf-sample';
 
@@ -32,6 +34,9 @@ export const setStateLoadingSuccess = createAction(STATE_LIST_LOAD_STATES_SUCCES
 export const setStateLoadingFailure = createAction(STATE_LIST_LOAD_STATES_FAILURE);
 export const updateStateSelection = createAction(STATE_LIST_UPDATE_STATE_SELECTION);
 export const resetStateListSelection = createAction(STATE_LIST_CLEAR_SELECTION);
+export const loadStateZipCodeSuccess = createAction(STATE_LIST_LOAD_ZIP_CODE_SUCCESS, 
+  (stateZipGeoJson, stateId) => { return {stateZipGeoJson, stateId}; });
+
 export const updateFilter = createAction(STATE_LIST_UPDATE_FILTER, (stateId, filterId, min, max) => {
   return {stateId, filterId, min, max};
 });
@@ -59,9 +64,20 @@ export const fetchStates = () => {
 
 export const selectState = (selectedState) => {
   return (dispatch, getState) => {
+    console.log(selectedState.ui_isSelected)
     if (selectedState.ui_isSelected) {
       return;
     }
+
+    // let stateId = parseInt(selectedState.STATE)
+    // ZipsApi.fetchZips(stateId)
+    //   .then(result=> {
+    //     debugger;
+    //     dispatch(loadStateZipCodeSuccess(result, selectedState.STATE));
+    //   })
+    //   .catch(error => {
+    //     debugger;
+    //   });
     
     dispatch(updateStateSelection(selectedState));
     dispatch(selectMapFeature(selectedState));
@@ -185,6 +201,18 @@ export const stateListReducers = {
     state.dictionary = {...state.dictionary};
     let newState = { ...state };
     return newState;
+  },
+  STATE_LIST_LOAD_ZIP_CODE_SUCCESS: (state, { payload }) => {
+    if (state.dictionary == null) {
+      return state;
+    }
+    let { stateZipGeoJson, stateId } = payload;
+    let soughtState = state.dictionary[parseInt(stateId)];
+    soughtState.zipsGeoJson = stateZipGeoJson;
+
+    state.dictionary = {...state.dictionary};
+    let newState = { ...state };
+    return newState;
   }
 };
 
@@ -204,7 +232,6 @@ const createStateDictionary = (stateGeoJson, childCareDictionary) => {
     let stateDictionary = _.reduce(shallowCopy, (hash, stateProperties) => {
       let id = parseInt(stateProperties.STATE);
       hash[id] = {id};
-      console.log('id:', id);
       hash[id].stateProperties = stateProperties;
 
       // while we're here we may as well add the childCare stuff too
@@ -215,6 +242,7 @@ const createStateDictionary = (stateGeoJson, childCareDictionary) => {
         let filterObject = createFilterObject(childCareProperties, props.soughtProperty, props.name);
         return filterObject;
       })
+      hash[id].zipsGeoJson = null;
       return hash;
     }, {});
 

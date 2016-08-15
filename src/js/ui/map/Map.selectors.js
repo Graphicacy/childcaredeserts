@@ -6,6 +6,7 @@ import {
   getStatesGeoJson, 
   getChildCareCentersGeoJsonDictionary, 
   getSelectedState,
+  getSelectedStateProperties,
   getSelectedStateId,
   getStateDictionary}
    from '../sidebar/Sidebar.selectors';
@@ -65,11 +66,76 @@ export const getChildCareMapFilter = createSelector([getSelectedFilters], (selec
   return mapboxFilters;
 });
 
-export const getMapLayers = createSelector([getStatesGeoJson, getSelectedChildCareGeoJson, getChildCareMapFilter], 
-  (statesGeoJson, selectedChildCareGeoJson, childCareMapFilter) => {
+
+
+export const getMapZipcodeUrl = createSelector([getSelectedStateProperties], (selectedState) => {
+  if (selectedState == null) {
+    return null;
+  }
+
+  let url = `data/zips/zips_${selectedState.STATE}.geo.json`;
+  return url;
+});
+
+const getZipsLayer = (zipcodeUrl, soughtProperty, min, max, minColor, maxColor) => {
+  if (zipcodeUrl == null) {
+    return null;
+  }
+
+  const SOURCE_NAME = 'zipsUrl';
+  const INSERT_LAYER_BEFORE = 'childCareLayer';
+
+  let source = {
+    id: SOURCE_NAME,
+    payload: {
+      type: 'geojson',
+      data: zipcodeUrl
+    }
+  };
+
+  // todo: normalize this.
+  let zipcodeLayer = {
+            "id": "zips_style",
+            "type": "fill",
+            "source": SOURCE_NAME,
+            "interactive": false,
+            "filter": [
+                "==",
+                "$type",
+                "Polygon"
+            ],
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "fill-antialias": true,
+                "fill-color": {
+                    "property": soughtProperty, //"money", // todo: soughtProperty
+                    'base': 1,
+                    'type': 'exponential',
+                    "stops": [
+                        [
+                            min,//0, // todo: min
+                            minColor//"#FF0000"
+                        ],
+                        [
+                            max, //100000, // todo: max
+                            maxColor//"#0000FF"
+                        ]
+                    ]
+                }
+            }
+        };
+  return { source, layers: [createMapboxGlLayer(zipcodeLayer, INSERT_LAYER_BEFORE)] };
+};
+
+export const getMapLayers = createSelector([getStatesGeoJson, getSelectedChildCareGeoJson, getChildCareMapFilter, getMapZipcodeUrl], 
+  (statesGeoJson, selectedChildCareGeoJson, childCareMapFilter, zipUrl) => {
   let statesLayer = getStateLayer(statesGeoJson);
   let childCareLayer = getChildCareLayers(selectedChildCareGeoJson, childCareMapFilter);
-  return [childCareLayer, statesLayer];
+  let zipsLayer = getZipsLayer(zipUrl, 'money', 0.0, 2357784.0000, '#FF0000', '#0000FF');
+
+  return _.without([statesLayer, childCareLayer, zipsLayer], null);
 });
 
 const getChildCareLayers = (selectedChildCareGeoJson, filter) => {
