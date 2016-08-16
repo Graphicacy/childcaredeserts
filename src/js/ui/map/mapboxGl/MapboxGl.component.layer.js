@@ -108,6 +108,13 @@ const MapboxGlComponentLayer = React.createClass( {
       map.addLayer(layer.definition, layer.insertBefore);
     });
   },
+
+  componentWillUnmount () {
+    layers.forEach(layer => {
+      map.removeLayer(layer.definition.id);
+    });
+  },
+
   render () {
     return null;    
   }

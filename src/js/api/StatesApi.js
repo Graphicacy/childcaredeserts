@@ -9,8 +9,8 @@ import _ from 'lodash';
 const STATE_FILE_NAME = 'states.json';
 
 export class StatesApi extends BaseApi {
-  constructor (settings, cache = null) {
-    super(settings, cache);
+  constructor (cache = {}, config = null) {
+    super(cache, config);
   }
 
   fetchStatesGeometry () {

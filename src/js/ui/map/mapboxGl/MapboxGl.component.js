@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import mapboxGl from 'mapbox-gl';
 import MapboxGlComponentLayer from './MapboxGl.component.layer';
 import MapboxGlComponentCamera from './MapboxGl.component.camera';
+// import MapboxGlComponentUrlLayer from './MapboxGl.component.urlLayer';
+
 import _ from 'lodash';
 const MapboxGlComponent = React.createClass( {
   propTypes: {
@@ -60,13 +62,14 @@ const MapboxGlComponent = React.createClass( {
     });
   },
 
-
+  componentWillUnmount () {
+    this.map.remove();
+  },
 
   render () {
     if (this.props.isReadyToInsertStateLayers === false) {
       return null;
     }
-    
     return (
       <div>
       {
@@ -82,6 +85,7 @@ const MapboxGlComponent = React.createClass( {
             );
           })
         }
+
           <MapboxGlComponentCamera 
             camera={this.props.camera}
             map={this.map}/>
@@ -91,5 +95,6 @@ const MapboxGlComponent = React.createClass( {
       </div>)
   }
 });
+
 
 export default MapboxGlComponent;

@@ -4,7 +4,7 @@ import _ from 'lodash';
 import DEFAULT_CONFIG from './config';
 
 export default class BaseApi {
-  constructor (cache = null, config = null) {
+  constructor (cache = {}, config = null) {
     this.cache = cache;
     this.config = config || DEFAULT_CONFIG;
     let apiUrl = this.config().apiUrl + '/';
@@ -17,43 +17,25 @@ export default class BaseApi {
   }
 
   get (endpoint, config) {
-    return this.httpClient.get(endpoint)
+    // implement really really simple caching for now.
+    if (this.cache[endpoint] != null) {
+      return this.cache[endpoint];
+    }
+
+    let request = this.httpClient.get(endpoint)
       .then((response) => {
         return response.data;
       }).catch((response) => {
-        return this.handleFailure(response);
+        return this.handleFailure(response, endpoint);
       });
+
+    // stuff the promise in the cache...
+    this.cache[endpoint] = request;
+    return this.cache[endpoint];
   }
 
-  put (endpoint, data) {
-    return this.httpClient.put(endpoint, data)
-      .catch((response) => {
-        return this.handleFailure(response);
-      });
-  }
-
-  delete (endpoint) {
-    return this.httpClient['delete'](endpoint)
-      .catch((response) => {
-        return this.handleFailure(response);
-      });
-  }
-
-  patch (endpoint, data) {
-    return this.httpClient.patch(endpoint, data)
-      .catch((response) => {
-        return this.handleFailure(response);
-      });
-  }
-
-  post (endpoint, data) {
-    return this.httpClient.post(endpoint, data)
-      .catch((response) => {
-        return this.handleFailure(response);
-      });
-  }
-
-  handleFailure(response) {
+  handleFailure(response, endpoint) {
+    delete this.cache[endpoint];
     return Promise.reject(response);
   }
 }

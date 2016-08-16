@@ -10,8 +10,8 @@ import _ from 'lodash';
 const CHILD_CARE_CENTER_FILE_NAME = 'childCareCenters.tsv';
 
 export class ChildCareCentersApi extends BaseApi {
-  constructor (settings, cache = null) {
-    super(settings, cache);
+  constructor (cache = {}, settings = null) {
+    super(cache, settings);
   }
 
   fetchChildCareCenters () {
