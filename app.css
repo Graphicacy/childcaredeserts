@@ -650,6 +650,16 @@ svg {
   text-align: center; }
   .sidebar-container h1 {
     font-size: 26px; }
+  .sidebar-container button {
+    background-color: #2D6185;
+    border: none;
+    text-transform: uppercase; }
+    .sidebar-container button:not(:first-child) {
+      margin-left: 10px; }
+    .sidebar-container button.selected {
+      background-color: #91AEBC; }
+    .sidebar-container button:hover {
+      background-color: #91AEBC; }
   .sidebar-container .description-paragraph {
     text-align: left; }
 
