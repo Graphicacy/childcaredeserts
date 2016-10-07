@@ -601,6 +601,10 @@ svg {
 .axis path {
   display: none; }
 
+.recharts-curve.recharts-pie-label-line {
+  fill: none;
+  stroke: none; }
+
 .app-container {
   position: absolute;
   width: 100%;
