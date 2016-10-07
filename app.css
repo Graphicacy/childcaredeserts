@@ -688,11 +688,15 @@ svg {
 h3, h4, h5 {
   margin: 5px 0px 5px 0px; }
 
+.tether-element {
+  z-index: 11; }
+
 @media (max-width: 768px) {
   .sidebar-container {
     position: static;
     width: 100%;
-    height: auto; }
+    height: auto;
+    overflow-y: visible; }
   .map-container {
     height: 500px;
     position: static; }
