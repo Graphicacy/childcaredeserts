@@ -655,8 +655,8 @@ svg {
   position: absolute;
   left: 340px;
   bottom: 0px;
-  width: 300px;
-  height: 50%;
+  width: 350px;
+  height: 60%;
   display: block;
   z-index: 5;
   background-color: rgba(255, 255, 255, 0.7);
@@ -664,7 +664,9 @@ svg {
   -moz-box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
   box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
   padding: 20px;
-  overflow-y: auto; }
+  overflow-y: auto;
+  -webkit-transition: width 0.3s, height 0.3s;
+  transition: width 0.3s, height 0.3s; }
   .popup-container .icons {
     position: absolute;
     right: 10px;
@@ -728,7 +730,8 @@ svg {
     .state-grid .state-row.row .state-cell {
       height: 100%;
       opacity: 0.8;
-      background-color: #FFF; }
+      background-color: #FFF;
+      padding: 0px; }
       .state-grid .state-row.row .state-cell .description, .state-grid .state-row.row .state-cell .image {
         height: 50%;
         display: block;
