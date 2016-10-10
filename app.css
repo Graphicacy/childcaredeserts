@@ -665,13 +665,17 @@ svg {
   box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
   padding: 20px;
   overflow-y: auto; }
-  .popup-container .icon-close {
+  .popup-container .icons {
     position: absolute;
     right: 10px;
     top: 10px; }
-    .popup-container .icon-close:hover {
+    .popup-container .icons:hover {
       color: #f99d33;
       cursor: pointer; }
+  .popup-container.closed {
+    width: 40px;
+    height: 40px;
+    overflow: hidden; }
 
 .sidebar-container {
   background-color: rgba(0, 82, 136, 0.8);
@@ -699,6 +703,49 @@ svg {
   .sidebar-container .description-paragraph {
     text-align: left; }
 
+.mapboxgl-ctrl-compass {
+  display: none !important; }
+
+.mapboxgl-ctrl-top-left {
+  left: 340px !important; }
+
+.state-grid {
+  position: absolute;
+  left: 340px;
+  padding: 0px !important;
+  top: 0px;
+  display: block;
+  height: 100%;
+  width: calc(100% - 340px);
+  z-index: 7;
+  background-color: #fff; }
+  .state-grid .state-row.row {
+    height: 50%;
+    width: 100%;
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+    display: block; }
+    .state-grid .state-row.row .state-cell {
+      height: 100%;
+      opacity: 0.8;
+      background-color: #FFF; }
+      .state-grid .state-row.row .state-cell .description, .state-grid .state-row.row .state-cell .image {
+        height: 50%;
+        display: block;
+        width: 100%; }
+      .state-grid .state-row.row .state-cell .description {
+        padding: 20px;
+        background-color: #fff;
+        overflow: auto; }
+  .state-grid:hover {
+    cursor: pointer; }
+    .state-grid:hover .state-row.row .state-cell:not(:hover) {
+      opacity: 0.5; }
+    .state-grid:hover .state-row.row .state-cell:hover {
+      -webkit-box-shadow: 10px 10px 63px -8px rgba(0, 0, 0, 0.75);
+      -moz-box-shadow: 10px 10px 63px -8px rgba(0, 0, 0, 0.75);
+      box-shadow: 10px 10px 63px -8px rgba(0, 0, 0, 0.75); }
+
 .map-container {
   position: absolute;
   top: 0px;
@@ -708,15 +755,9 @@ svg {
 
 .map-controls {
   position: absolute;
-  left: 340px;
+  left: 370px;
   padding: 20px;
   z-index: 5; }
-  .map-controls .icons {
-    font-size: 30px;
-    margin-right: 10px; }
-    .map-controls .icons:hover {
-      color: #f99d33;
-      cursor: pointer; }
   .map-controls .map-select {
     margin-bottom: -5px;
     width: 200px;
@@ -780,4 +821,8 @@ h3, h4, h5 {
     height: 500px;
     position: static; }
   .no-mobile {
-    display: none; } }
+    display: none; }
+  .map-controls {
+    left: 30px; }
+  .mapboxgl-ctrl-top-left {
+    left: 0px !important; } }
