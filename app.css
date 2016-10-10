@@ -759,6 +759,7 @@ svg {
 .map-controls {
   position: absolute;
   left: 370px;
+  top: 0px;
   padding: 20px;
   z-index: 5; }
   .map-controls .map-select {
