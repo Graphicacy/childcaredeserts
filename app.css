@@ -814,6 +814,24 @@ h3, h4, h5 {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg); } }
 
+.about-the-data {
+  position: absolute;
+  left: 340px;
+  top: 0px;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  z-index: 8;
+  -webkit-box-shadow: 10px 10px 63px -8px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 10px 10px 63px -8px rgba(0, 0, 0, 0.75);
+  box-shadow: 10px 10px 63px -8px rgba(0, 0, 0, 0.75); }
+  .about-the-data .icons {
+    position: absolute;
+    right: 20px;
+    top: 20px; }
+    .about-the-data .icons:hover {
+      color: #f99d33;
+      cursor: pointer; }
+
 @media (max-width: 768px) {
   .sidebar-container {
     position: static;
