@@ -466,7 +466,7 @@ textarea {
 
 html, body {
   font-family: "myriad-pro-semi-condensed", Helvetica, Arial, sans-serif;
-  color: #333;
+  color: #555;
   text-rendering: optimizeLegibility;
   font-size: 1em;
   margin: 0;
@@ -502,12 +502,10 @@ main {
   padding-bottom: 25px; }
 
 h1, h2, h3, h4 {
-  font-family: "adelle-condensed", Georgia, Times New Roman, Times, serif;
   font-weight: 700;
   margin: 1em 0; }
 
 h5, h6 {
-  font-family: "myriad-pro-semi-condensed", Helvetica, Arial, sans-serif;
   text-transform: uppercase;
   font-weight: 400;
   margin: 1em 0; }
@@ -601,6 +599,9 @@ svg {
 .axis path {
   display: none; }
 
+html, body {
+  font-family: 'Open Sans', sans-serif; }
+
 .recharts-curve.recharts-pie-label-line {
   fill: none;
   stroke: none; }
@@ -633,9 +634,12 @@ svg {
     line-height: 64px; }
     .header .info-buttons .info:not(:first-child) {
       margin-left: 20px; }
-    .header .info-buttons .info:hover {
-      cursor: pointer;
-      border-bottom: 1px solid black; }
+    .header .info-buttons .info {
+      font-weight: bold;
+      font-size: 14px; }
+      .header .info-buttons .info:hover {
+        cursor: pointer;
+        border-bottom: 1px solid black; }
     .header .info-buttons .icons {
       margin-left: 5px; }
 
@@ -651,22 +655,27 @@ svg {
   width: 300px;
   margin: 0px auto; }
 
+.cap-tooltip {
+  display: block;
+  width: 100px;
+  font-size: 12px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #555; }
+
 .popup-container {
   position: absolute;
   left: 340px;
   bottom: 0px;
   width: 350px;
-  height: 60%;
   display: block;
   z-index: 5;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.9);
   -webkit-box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
   box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
   padding: 20px;
-  overflow-y: auto;
-  -webkit-transition: width 0.3s, height 0.3s;
-  transition: width 0.3s, height 0.3s; }
+  overflow: auto; }
   .popup-container .icons {
     position: absolute;
     right: 10px;
@@ -678,6 +687,8 @@ svg {
     width: 40px;
     height: 40px;
     overflow: hidden; }
+    .popup-container.closed div {
+      margin-top: 40px; }
 
 .sidebar-container {
   background-color: rgba(0, 82, 136, 0.8);
@@ -691,7 +702,11 @@ svg {
   overflow-x: hidden;
   text-align: center; }
   .sidebar-container h1 {
-    font-size: 26px; }
+    font-size: 20px; }
+    .sidebar-container h1.x-percent-header {
+      margin-bottom: -10px; }
+    .sidebar-container h1.title-header {
+      margin-top: 0px; }
   .sidebar-container button {
     background-color: inherit;
     border: none;
@@ -704,6 +719,10 @@ svg {
       background-color: #91AEBC; }
   .sidebar-container .description-paragraph {
     text-align: left; }
+
+.center-buttons.no-click button {
+  pointer-events: none;
+  opacity: 0.3; }
 
 .mapboxgl-ctrl-compass {
   display: none !important; }
@@ -733,13 +752,16 @@ svg {
       background-color: #FFF;
       padding: 0px; }
       .state-grid .state-row.row .state-cell .description, .state-grid .state-row.row .state-cell .image {
-        height: 50%;
         display: block;
         width: 100%; }
       .state-grid .state-row.row .state-cell .description {
+        height: 70%;
         padding: 20px;
+        font-size: 14px;
         background-color: #fff;
         overflow: auto; }
+      .state-grid .state-row.row .state-cell .image {
+        height: 30%; }
   .state-grid:hover {
     cursor: pointer; }
     .state-grid:hover .state-row.row .state-cell:not(:hover) {
@@ -815,6 +837,17 @@ h3, h4, h5 {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg); } }
 
+.logo-link {
+  text-decoration: none;
+  border-bottom: none; }
+
+.description-header {
+  font-weight: bold;
+  text-transform: uppercase; }
+
+.description-paragraph {
+  font-size: 14px; }
+
 .about-the-data {
   position: absolute;
   left: 340px;
@@ -834,6 +867,15 @@ h3, h4, h5 {
       cursor: pointer; }
 
 @media (max-width: 768px) {
+  .popup-container {
+    height: 100%;
+    z-index: 20;
+    left: 0px;
+    width: 100%; }
+  .map-components {
+    position: relative; }
+    .map-components.hide-map {
+      display: none; }
   .sidebar-container {
     position: static;
     width: 100%;
