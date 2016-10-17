@@ -696,11 +696,12 @@ html, body {
   width: 340px;
   height: 100%;
   position: relative;
-  z-index: 5;
+  z-index: 12;
   padding: 10px;
   overflow-y: auto;
-  overflow-x: hidden;
   text-align: center; }
+  .sidebar-container .Select-menu-outer {
+    z-index: 20; }
   .sidebar-container h1 {
     font-size: 20px; }
     .sidebar-container h1.x-percent-header {
@@ -755,14 +756,14 @@ html, body {
         display: block;
         width: 100%; }
       .state-grid .state-row.row .state-cell .description {
-        height: 70%;
+        height: 60%;
         padding: 20px;
         font-size: 14px;
         background-color: #fff;
         overflow: auto;
         z-index: 11; }
       .state-grid .state-row.row .state-cell .image {
-        height: 30%;
+        height: 40%;
         z-index: 10;
         overflow: hidden; }
   .state-grid:hover {
@@ -873,6 +874,8 @@ h3, h4, h5 {
       cursor: pointer; }
 
 @media (max-width: 768px) {
+  .state-select-container {
+    overflow-y: visible !important; }
   .popup-container {
     height: 100%;
     z-index: 20;
