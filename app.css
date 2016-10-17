@@ -697,7 +697,7 @@ html, body {
   height: 100%;
   position: relative;
   z-index: 5;
-  padding: 20px;
+  padding: 10px;
   overflow-y: auto;
   overflow-x: hidden;
   text-align: center; }
@@ -759,9 +759,12 @@ html, body {
         padding: 20px;
         font-size: 14px;
         background-color: #fff;
-        overflow: auto; }
+        overflow: auto;
+        z-index: 11; }
       .state-grid .state-row.row .state-cell .image {
-        height: 30%; }
+        height: 30%;
+        z-index: 10;
+        overflow: hidden; }
   .state-grid:hover {
     cursor: pointer; }
     .state-grid:hover .state-row.row .state-cell:not(:hover) {
@@ -840,6 +843,9 @@ h3, h4, h5 {
 .logo-link {
   text-decoration: none;
   border-bottom: none; }
+
+.button-divider {
+  margin: 10px 0px; }
 
 .description-header {
   font-weight: bold;
