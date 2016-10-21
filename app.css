@@ -665,11 +665,12 @@ html, body {
 
 .popup-container {
   position: absolute;
-  left: 340px;
+  left: 420px;
   bottom: 0px;
   width: 350px;
   display: block;
   z-index: 5;
+  font-size: 14px;
   background-color: rgba(255, 255, 255, 0.9);
   -webkit-box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
@@ -693,21 +694,22 @@ html, body {
 .sidebar-container {
   background-color: rgba(0, 82, 136, 0.8);
   color: #fff;
-  width: 340px;
+  width: 420px;
   height: 100%;
   position: relative;
   z-index: 12;
-  padding: 10px;
+  padding: 30px;
   overflow-y: auto;
   text-align: center; }
   .sidebar-container .Select-menu-outer {
     z-index: 20; }
   .sidebar-container h1 {
-    font-size: 20px; }
+    font-size: 16px; }
     .sidebar-container h1.x-percent-header {
       margin-bottom: -10px; }
     .sidebar-container h1.title-header {
-      margin-top: 0px; }
+      margin-top: 0px;
+      margin-bottom: 10px; }
   .sidebar-container button {
     background-color: inherit;
     border: none;
@@ -729,16 +731,16 @@ html, body {
   display: none !important; }
 
 .mapboxgl-ctrl-top-left {
-  left: 340px !important; }
+  left: 420px !important; }
 
 .state-grid {
   position: absolute;
-  left: 340px;
+  left: 420px;
   padding: 0px !important;
   top: 0px;
   display: block;
   height: 100%;
-  width: calc(100% - 340px);
+  width: calc(100% - 420px);
   z-index: 7;
   background-color: #fff; }
   .state-grid .state-row.row {
@@ -784,13 +786,13 @@ html, body {
 
 .map-controls {
   position: absolute;
-  left: 370px;
+  left: 450px;
   top: 0px;
   padding: 20px;
   z-index: 5; }
   .map-controls .map-select {
     margin-bottom: -5px;
-    width: 200px;
+    width: 300px;
     display: inline-block; }
 
 .map {
@@ -862,7 +864,7 @@ h3, h4, h5 {
 
 .about-the-data {
   position: absolute;
-  left: 340px;
+  left: 420px;
   height: 100%;
   overflow-y: auto;
   top: 0px;
