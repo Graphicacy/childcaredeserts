@@ -606,6 +606,9 @@ html, body {
   fill: none;
   stroke: none; }
 
+.recharts-layer.recharts-pie-sector path {
+  stroke: none; }
+
 .app-container {
   position: absolute;
   width: 100%;
@@ -625,7 +628,7 @@ html, body {
     display: inline-block;
     width: 200px;
     padding: 10px;
-    margin-left: 40px; }
+    margin-left: 20px; }
   .header .info-buttons {
     position: absolute;
     right: 40px;
@@ -637,9 +640,11 @@ html, body {
     .header .info-buttons .info {
       font-weight: bold;
       font-size: 14px; }
-      .header .info-buttons .info:hover {
+      .header .info-buttons .info:hover:not(.share), .header .info-buttons .info.share .fa:hover {
         cursor: pointer;
         border-bottom: 1px solid black; }
+      .header .info-buttons .info.share .fa {
+        margin-left: 10px; }
     .header .info-buttons .icons {
       margin-left: 5px; }
 
@@ -665,9 +670,11 @@ html, body {
 
 .popup-container {
   position: absolute;
-  left: 420px;
+  left: 360px;
   bottom: 0px;
   width: 350px;
+  max-height: 100%;
+  overflow-y: auto;
   display: block;
   z-index: 5;
   font-size: 14px;
@@ -675,7 +682,7 @@ html, body {
   -webkit-box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
   box-shadow: 10px 2px 38px -15px rgba(0, 0, 0, 0.75);
-  padding: 20px;
+  padding: 25px;
   overflow: auto; }
   .popup-container .icons {
     position: absolute;
@@ -694,22 +701,35 @@ html, body {
 .sidebar-container {
   background-color: rgba(0, 82, 136, 0.8);
   color: #fff;
-  width: 420px;
+  width: 360px;
   height: 100%;
   position: relative;
   z-index: 12;
   padding: 30px;
   overflow-y: auto;
-  text-align: center; }
+  text-align: center;
+  font-size: 13px; }
+  .sidebar-container.opaque {
+    background-color: #2C709E; }
   .sidebar-container .Select-menu-outer {
     z-index: 20; }
+  .sidebar-container .demographics-bar-chart {
+    margin-left: -22px;
+    margin-top: 10px; }
+    .sidebar-container .demographics-bar-chart .recharts-x-axis .recharts-text.recharts-cartesian-axis-tick-value {
+      transform: translate(0, 5px);
+      font-size: 11px; }
   .sidebar-container h1 {
-    font-size: 16px; }
+    font-size: 18px; }
     .sidebar-container h1.x-percent-header {
-      margin-bottom: -10px; }
+      margin-bottom: -16px; }
     .sidebar-container h1.title-header {
       margin-top: 0px;
       margin-bottom: 10px; }
+  .sidebar-container h4 {
+    font-size: 13px;
+    font-weight: normal;
+    margin-top: -5px; }
   .sidebar-container button {
     background-color: inherit;
     border: none;
@@ -731,16 +751,17 @@ html, body {
   display: none !important; }
 
 .mapboxgl-ctrl-top-left {
-  left: 420px !important; }
+  left: 360px !important; }
 
 .state-grid {
   position: absolute;
-  left: 420px;
+  left: 360px;
   padding: 0px !important;
+  font-size: 13px;
   top: 0px;
   display: block;
   height: 100%;
-  width: calc(100% - 420px);
+  width: calc(100% - 360px);
   z-index: 7;
   background-color: #fff; }
   .state-grid .state-row.row {
@@ -760,7 +781,6 @@ html, body {
       .state-grid .state-row.row .state-cell .description {
         height: 60%;
         padding: 20px;
-        font-size: 14px;
         background-color: #fff;
         overflow: auto;
         z-index: 11; }
@@ -786,7 +806,7 @@ html, body {
 
 .map-controls {
   position: absolute;
-  left: 450px;
+  left: 390px;
   top: 0px;
   padding: 20px;
   z-index: 5; }
@@ -853,7 +873,7 @@ h3, h4, h5 {
   border-bottom: none; }
 
 .button-divider {
-  margin: 10px 0px; }
+  margin: 20px 0px; }
 
 .description-header {
   font-weight: bold;
@@ -864,7 +884,7 @@ h3, h4, h5 {
 
 .about-the-data {
   position: absolute;
-  left: 420px;
+  left: 360px;
   height: 100%;
   overflow-y: auto;
   top: 0px;
