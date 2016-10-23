@@ -668,6 +668,9 @@ html, body {
   background-color: rgba(255, 255, 255, 0.9);
   color: #555; }
 
+.desert-toggle {
+  margin-top: 10px; }
+
 .popup-container {
   position: absolute;
   left: 360px;
@@ -797,6 +800,14 @@ html, body {
       -moz-box-shadow: 10px 10px 63px -8px rgba(0, 0, 0, 0.75);
       box-shadow: 10px 10px 63px -8px rgba(0, 0, 0, 0.75); }
 
+.mobile-about-data {
+  display: block;
+  margin-top: 10px;
+  padding: 5px; }
+  .mobile-about-data:hover {
+    cursor: pointer;
+    background-color: #91AEBC; }
+
 .map-container {
   position: absolute;
   top: 0px;
@@ -902,7 +913,13 @@ h3, h4, h5 {
       color: #f99d33;
       cursor: pointer; }
 
+.state-select-container {
+  font-size: 14px; }
+
 @media (max-width: 768px) {
+  .about-the-data {
+    left: 0px;
+    position: relative; }
   .state-select-container {
     overflow-y: visible !important; }
   .popup-container {
