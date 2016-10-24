@@ -715,7 +715,7 @@ html, body {
   .sidebar-container.opaque {
     background-color: #2C709E; }
   .sidebar-container .Select-menu-outer {
-    z-index: 20; }
+    z-index: 25; }
   .sidebar-container .demographics-bar-chart {
     margin-left: -22px;
     margin-top: 10px; }
@@ -783,7 +783,7 @@ html, body {
         width: 100%; }
       .state-grid .state-row.row .state-cell .description {
         height: 60%;
-        padding: 20px;
+        padding: 15px;
         background-color: #fff;
         overflow: auto;
         z-index: 11; }
@@ -807,6 +807,8 @@ html, body {
   .mobile-about-data:hover {
     cursor: pointer;
     background-color: #91AEBC; }
+  .mobile-about-data .icons {
+    margin-left: 5px; }
 
 .map-container {
   position: absolute;
