@@ -1,237 +1,156 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
-import * as UiLoadingStatuses from '../constants/loadingStatus';
-import { 
-  getIsDataReady, 
-  getStatesGeoJson, 
-  getChildCareCentersGeoJsonDictionary, 
-  getSelectedState,
+import {
+  getIsDataReady,
+  getStatesGeoJson,
   getSelectedStateProperties,
-  getSelectedStateId,
-  getStateDictionary}
-   from '../sidebar/Sidebar.selectors';
+  getChildCareCentersGeoJsonDictionary,
+  getOverlayMode
+  } from '../sidebar/Sidebar.selectors';
+
+import { ORANGE, GRAY } from '../sidebar/StateCharts.container';
 
 export const getMapCamera = state => state.map.camera;
 export const getMapGround = state => state.map.ground;
 export const getMapSettings = state => state.map.settings;
 export const getMapInteractivity = state => state.map.interactivity;
 
-export const getIsReadyToInsertStateLayers = createSelector([getIsDataReady, getMapInteractivity], 
+export const getIsReadyToInsertStateLayers = createSelector([getIsDataReady, getMapInteractivity],
     (isDataReady, interactivity) => {
       return isDataReady && interactivity.isMapInitialized;
-});
+    });
 
 const emptyGeoJson = {
-    "type": "FeatureCollection",
-    "features": []
+  'type': 'FeatureCollection',
+  'features': []
 };
 
+
 export const getSelectedChildCareGeoJson = createSelector(
-    [getIsDataReady, getChildCareCentersGeoJsonDictionary], 
-    (isDataReady, childCareCenters) => {
-      if (isDataReady == false) {
-        return emptyGeoJson;
-      }
-
-      return childCareCenters;
-});
-
-const emptyArray = [];
-export const getSelectedFilters = createSelector([getSelectedStateId, getStateDictionary], (stateId, stateDictionary) => {
-  if (stateId == null || stateDictionary == null) {
-    return emptyArray;
-  }
-  return stateDictionary[stateId].filters;
-});
-
-const emptyChildCareFilter = ["has", 'tier'];
-export const getChildCareMapFilter = createSelector([getSelectedFilters], (selectedFilters) => {
-
-  if (selectedFilters == null) {
-    return emptyChildCareFilter;
+[getIsDataReady, getChildCareCentersGeoJsonDictionary],
+(isDataReady, childCareCenters) => {
+  if (!isDataReady) {
+    return emptyGeoJson;
   }
 
-  let filterTuples = selectedFilters.map(filter => {
-    let { currentMin, currentMax, id } = filter;
-    // get min
-    let minFilter = ['>=', id, currentMin];
-    // get max
-    let maxFilter = ['<=', id, currentMax];
-
-    return [minFilter, maxFilter];
-  });
-
-  let mapboxFilters = ["all", ..._.flatten(filterTuples)];
-
-  return mapboxFilters;
+  return childCareCenters;
 });
-
 
 
 export const getMapZipcodeUrl = createSelector([getSelectedStateProperties], (selectedState) => {
-  if (selectedState == null) {
+  if (!selectedState) {
     return null;
   }
 
-  let url = `data/zips/zips_${selectedState.STATE}.geo.json`;
+  const url = `data/zipdata/zip_${selectedState.STATE}.geo.json`;
   return url;
 });
 
-const getZipsLayer = (zipcodeUrl, soughtProperty, min, max, minColor, maxColor) => {
-  if (zipcodeUrl == null) {
+export const getZipsLayer = (zipcodeUrl, overlayMode) => {
+  if (!zipcodeUrl) {
     return null;
   }
 
-  const SOURCE_NAME = 'zipsUrl';
+  const SOURCE_NAME = zipcodeUrl;
   const INSERT_LAYER_BEFORE = 'childCareLayer';
 
-  let source = {
+  const source = {
     id: SOURCE_NAME,
     payload: {
-      type: 'geojson',
+      type: 'topojson',
       data: zipcodeUrl
     }
   };
 
+  const opacity = (overlayMode === 'CENTERS' ? 0.3 : 1);
+
   // todo: normalize this.
-  let zipcodeLayer = {
-            "id": "zips_style",
-            "type": "fill",
-            "source": SOURCE_NAME,
-            "interactive": false,
-            "filter": [
-                "==",
-                "$type",
-                "Polygon"
-            ],
-            "layout": {
-                "visibility": "visible"
-            },
-            "paint": {
-                "fill-antialias": true,
-                "fill-color": {
-                    "property": soughtProperty, //"money", // todo: soughtProperty
-                    'base': 1,
-                    'type': 'exponential',
-                    "stops": [
-                        [
-                            min,//0, // todo: min
-                            minColor//"#FF0000"
-                        ],
-                        [
-                            max, //100000, // todo: max
-                            maxColor//"#0000FF"
-                        ]
-                    ]
-                }
-            }
-        };
-  return { source, layers: [createMapboxGlLayer(zipcodeLayer, INSERT_LAYER_BEFORE)] };
+  const zipcodeLayer = createMapboxGlLayer({
+    'id': 'zips_style',
+    'type': 'fill',
+    'source': SOURCE_NAME,
+    'interactive': true,
+    'filter': [
+      '==',
+      '$type',
+      'Polygon'
+    ],
+    'layout': {
+      'visibility': 'visible'
+    },
+    'paint': {
+      'fill-antialias': true,
+      'fill-opacity': opacity,
+      'fill-outline-color': '#555555',
+      'fill-color': {
+        'property': 'ccd',
+        'stops': [
+          [ 0, GRAY ],
+          [ 1, ORANGE ]
+        ]
+      }
+    }
+  }, INSERT_LAYER_BEFORE);
+
+
+  const zipOutlineLayer = createMapboxGlLayer({
+    id: 'zipOutlineLayer',
+    type: 'line',
+    source: SOURCE_NAME,
+    layout: { 'visibility': 'visible' },
+    'interactive': false,
+    paint: {
+      'line-color': '#555555',
+      'line-opacity': 1,
+      'line-width': 2.0
+    },
+    'filter': ['==', 'ZCTA5CE10', '-1']
+  }, null);
+
+
+  return { source, layers: [
+    zipcodeLayer, zipOutlineLayer
+  ] };
 };
 
-export const getMapLayers = createSelector([getStatesGeoJson, getSelectedChildCareGeoJson, getChildCareMapFilter, getMapZipcodeUrl], 
-  (statesGeoJson, selectedChildCareGeoJson, childCareMapFilter, zipUrl) => {
-  let statesLayer = getStateLayer(statesGeoJson);
-  let childCareLayer = getChildCareLayers(selectedChildCareGeoJson, childCareMapFilter);
-  let zipsLayer = getZipsLayer(zipUrl, 'money', 0.0, 2357784.0000, '#FF0000', '#0000FF');
+export const getMapLayers = createSelector(
+  [getStatesGeoJson, getMapZipcodeUrl,  getSelectedChildCareGeoJson, getOverlayMode ],
+  (statesGeoJson, zipUrl, selectedChildCareGeoJson, overlayMode) => {
+    const statesLayer = getStateLayer(statesGeoJson);
+    const zipsLayer = getZipsLayer(zipUrl, overlayMode);
+    const childCareLayer = getChildCareLayers(selectedChildCareGeoJson);
 
-  return _.without([statesLayer, childCareLayer, zipsLayer], null);
-});
+    return _.without([statesLayer, childCareLayer, zipsLayer], null);
+  });
 
-const getChildCareLayers = (selectedChildCareGeoJson, filter) => {
-  let sourceName = 'childCareGeoJson';
-  const INSERT_LAYER_BEFORE = 'place-city-sm';
-  let source = {
+
+const getStateLayer = (statesGeoJson) => {
+  const sourceName = 'statesGeoJson';
+  const source = {
     id: sourceName,
     payload: {
       'type': 'geojson',
-      'data': selectedChildCareGeoJson
+      'data': statesGeoJson
     }
   };
 
-  let childCareDotLayer = createMapboxGlLayer({
-        id: 'childCareLayer',
-        type: 'circle',
-        source: sourceName,
-        "layout": {
-                "visibility": "visible"
-            },
-
-        interactive: false,
-        // before: INSERT_LAYER_BEFORE,
-        filter: filter,
-        "paint": {
-          "circle-color": {
-              property: 'tier',
-              stops: [
-                  [0, '#d0d1e6'],
-                  [1, '#a6bddb'],
-                  [2, '#3690c0'],
-                  [3, '#016c59']
-              ]
-          }, ///"hsl(211, 100%, 76%)",
-                
-                "circle-radius": {
-                    "base": 1,
-                    property: 'tier',
-                    "stops": 
-                    [
-                      [{zoom: 3,  value: 0},   0.65],
-                      [{zoom: 3,  value: 1}, 0.65],
-                      [{zoom: 3,  value: 2}, 0.65],
-                      [{zoom: 3,  value: 3}, 0.65],
-
-                      [{zoom: 4,  value: 0},   0.75],
-                      [{zoom: 4,  value: 1}, 0.75],
-                      [{zoom: 4,  value: 2}, 0.75],
-                      [{zoom: 4,  value: 3}, 0.75],
-
-                      [{zoom: 6.2,  value: 0},   1.3],
-                      [{zoom: 6.2,  value: 1}, 1.7],
-                      [{zoom: 6.2,  value: 2}, 1.7],
-                      [{zoom: 6.2,  value: 3}, 1.7],
-
-                      [{zoom: 15,  value: 0}, 4.0],
-                      [{zoom: 15,  value: 1}, 8.0],
-                      [{zoom: 15,  value: 2}, 8.0],
-                      [{zoom: 15,  value: 3}, 8.0],
-                    ]
-                }
-            }
-      }, INSERT_LAYER_BEFORE); // 
-
-  let layers = [childCareDotLayer];
-
-  return { source, layers };
-}
-
-const getStateLayer = (statesGeoJson) => {
-  let sourceName = 'statesGeoJson';
-  let source = {
-      id: sourceName,
-      payload: {
-        'type': 'geojson',
-        'data': statesGeoJson
-      }
-    };
-
-  let stateFillLayer = createMapboxGlLayer({
-        id: 'stateFillLayer',
-        type: 'fill',
-        source: sourceName,
-        layout: {},
-        interactive: true,
-        paint: {
-          'fill-color': '#989898',
-          'fill-opacity': 0.01,
-        }
-      }, null);
-  let stateOutlineLayer = createMapboxGlLayer({
+  const stateFillLayer = createMapboxGlLayer({
+    id: 'stateFillLayer',
+    type: 'fill',
+    source: sourceName,
+    layout: {},
+    interactive: true,
+    paint: {
+      'fill-color': '#989898',
+      'fill-opacity': 0.01,
+    }
+  }, null);
+  const stateOutlineLayer = createMapboxGlLayer({
     id: 'stateOutlineLayer',
     type: 'line',
     source: sourceName,
     layout: { 'visibility': 'visible' },
-    "interactive": false,
+    'interactive': false,
     paint: {
       'line-color': '#989898',
       'line-opacity': 0.3,
@@ -239,26 +158,95 @@ const getStateLayer = (statesGeoJson) => {
     }
   }, null);
 
-  let stateSelectedLayer = createMapboxGlLayer({
+  const stateSelectedLayer = createMapboxGlLayer({
     id: 'stateSelectionLayer',
     type: 'line',
     source: sourceName,
     layout: { 'visibility': 'visible' },
-    "interactive": false,
+    'interactive': false,
     paint: {
       'line-color': '#374C67',
       'line-opacity': 0.8,
       'line-width': 3.0
     },
-    "filter": ["==", "ui_isSelected", true]
+    'filter': ['==', 'ui_isSelected', true]
   }, null);
 
-  let layers = [ stateFillLayer, stateOutlineLayer, stateSelectedLayer ];
-  return { source, layers, before: null };
-}
+  const layers = [ stateFillLayer, stateOutlineLayer, stateSelectedLayer ];
+  return { source, layers, before: 'water' };
+};
+
+
+const getChildCareLayers = (selectedChildCareGeoJson) => {
+  const sourceName = 'childCareGeoJson';
+  const INSERT_LAYER_BEFORE = 'place-city-sm';
+  const source = {
+    id: sourceName,
+    payload: {
+      'type': 'geojson',
+      'data': selectedChildCareGeoJson
+    }
+  };
+
+  const childCareDotLayer = createMapboxGlLayer({
+    id: 'childCareLayer',
+    type: 'circle',
+    source: sourceName,
+    'layout': {
+      'visibility': 'visible'
+    },
+
+    interactive: false,
+        // before: INSERT_LAYER_BEFORE,
+    'paint': {
+      'circle-color': {
+        property: 'tier',
+        stops: [
+          [0, '#005288'],
+          [1, '#005288'],
+          [2, '#005288'],
+          [3, '#005288']
+        ]
+      },
+
+      'circle-radius': {
+        'base': 1,
+        property: 'tier',
+        'stops':
+        [
+          [{zoom: 3,  value: 0},   0.65],
+          [{zoom: 3,  value: 1}, 0.65],
+          [{zoom: 3,  value: 2}, 0.65],
+          [{zoom: 3,  value: 3}, 0.65],
+
+          [{zoom: 4,  value: 0},   0.75],
+          [{zoom: 4,  value: 1}, 0.75],
+          [{zoom: 4,  value: 2}, 0.75],
+          [{zoom: 4,  value: 3}, 0.75],
+
+          [{zoom: 6.2,  value: 0},   1.3],
+          [{zoom: 6.2,  value: 1}, 1.3],
+          [{zoom: 6.2,  value: 2}, 1.3],
+          [{zoom: 6.2,  value: 3}, 1.3],
+
+          [{zoom: 15,  value: 0}, 4.0],
+          [{zoom: 15,  value: 1}, 4.0],
+          [{zoom: 15,  value: 2}, 4.0],
+          [{zoom: 15,  value: 3}, 4.0],
+        ]
+      }
+    }
+  }, INSERT_LAYER_BEFORE); //
+
+  const layers = [childCareDotLayer];
+
+  return { source, layers };
+};
+
+
 
 const createMapboxGlLayer = (mapboxObject, insertBefore) => {
   return {
     definition: mapboxObject, insertBefore
-  }
-}
+  };
+};

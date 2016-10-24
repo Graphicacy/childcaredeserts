@@ -13,10 +13,21 @@ const MapboxGlComponentLayer = React.createClass( {
 
   componentDidMount() {
     // load the source
-    var source = new mapboxGl.GeoJSONSource({
+    const source = new mapboxGl.GeoJSONSource({
       data: this.props.source.payload.data
     });
     this.source = source;
+
+    // HACK -- remove source if exists before re-adding
+    // TODO: figure out why there are sometimes collisions...
+    try {
+      this.props.map.removeSource(this.props.source.id);
+    } catch (err) {
+      if (!/There is no source with this ID/.test(err.message)) {
+        throw err;
+      }
+    }
+
     this.props.map.addSource(this.props.source.id, this.source);
     // this.props.map.addSource(this.props.source.id, this.props.source.payload);
 
@@ -25,14 +36,14 @@ const MapboxGlComponentLayer = React.createClass( {
 
     // load interactivity.
     const DEBOUNCE_DELAY_MS = 80;
-    let debounceOptions = {maxWait: 120};
+    const debounceOptions = {maxWait: 120};
 
     // We should debounce our events to reduce load on CPU.
     this.proxyOnLayerMouseOver = _.debounce(this.onLayerMouseOver, DEBOUNCE_DELAY_MS, debounceOptions);
     this.proxyOnUpdateLayerFilter = _.debounce(this.updateLayerFilter, 80, {maxWait: 130});
     this.props.layers
       .filter(layer => layer.definition.interactive)
-      .forEach(layer => {
+      .forEach(() => {
         // this line eventually just calls onLayerMouseOver
         // but without a ton of needless canvas queries.
         // The idea is better performance.
@@ -43,10 +54,10 @@ const MapboxGlComponentLayer = React.createClass( {
   },
 
   onLayerMouseOver (e) {
-    let features = this.getInteractiveFeaturesOverPoint(e.point);
+    const features = this.getInteractiveFeaturesOverPoint(e.point);
     this.props.map.getCanvas().style.cursor = features.length ? 'pointer' : '';
-    if (this.props.onFeatureHover != null) {
-      if (features == null || features.length === 0) {
+    if (this.props.onFeatureHover) {
+      if (!(features && features.length)) {
         return;
       }
 
@@ -55,35 +66,35 @@ const MapboxGlComponentLayer = React.createClass( {
   },
 
   getInteractiveFeaturesOverPoint(point) {
-    let interactiveLayerNames = this.props.layers
+    const interactiveLayerNames = this.props.layers
       .filter(layer => layer.definition.interactive)
       .map(layer => layer.definition.id);
 
-    var features = this.props.map.queryRenderedFeatures(point, { layers: interactiveLayerNames });
+    const features = this.props.map.queryRenderedFeatures(point, { layers: interactiveLayerNames });
     return features;
   },
 
   componentDidUpdate (previousProps) {
-    let isDuplicate = previousProps === this.props;
+    const isDuplicate = previousProps === this.props;
     if (isDuplicate) {
       return;
     }
 
-    let isSourceUnchanged = previousProps.source === this.props.source;
+    const isSourceUnchanged = previousProps.source === this.props.source;
     if (isSourceUnchanged) {
       return;
     }
 
     this.source.setData(this.props.source.payload.data);
 
-    let layers = this.props.layers;
+    const layers = this.props.layers;
     layers.forEach(layer => {
       this.proxyOnUpdateLayerFilter(layer);
-    })
+    });
   },
 
   updateLayerFilter (layer) {
-    if (layer.definition.filter == null) {
+    if (!layer.definition.filter) {
       return;
     }
 
@@ -91,12 +102,12 @@ const MapboxGlComponentLayer = React.createClass( {
   },
 
   onLayerClick(e) {
-    if (this.props.onFeatureClick == null) {
+    if (!this.props.onFeatureClick) {
       return;
     }
 
-    let features = this.getInteractiveFeaturesOverPoint(e.point);
-    if (features == null || features.length === 0) {
+    const features = this.getInteractiveFeaturesOverPoint(e.point);
+    if (!(features && features.length)) {
       return;
     }
 
@@ -110,13 +121,15 @@ const MapboxGlComponentLayer = React.createClass( {
   },
 
   componentWillUnmount () {
+    const layers = this.props.layers;
+    const map = this.props.map;
     layers.forEach(layer => {
       map.removeLayer(layer.definition.id);
     });
   },
 
   render () {
-    return null;    
+    return null;
   }
 });
 

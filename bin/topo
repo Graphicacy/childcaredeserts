@@ -1,3 +1,0 @@
-#!/bin/bash
-
-topojson docs/zip_shapes/zips.shp -o docs/zips.json -p zcta=ZCTA5CE10,state=STATEFP10

@@ -1,8 +1,4 @@
-'use strict';
-import {
-  createAction, handleActions
-}
-from 'redux-actions';
+import { createAction, handleActions } from 'redux-actions';
 import _ from 'lodash';
 
 // ------------------------------------
@@ -10,7 +6,7 @@ import _ from 'lodash';
 // ------------------------------------
 export const MAP_GROUND_SET_MAP_STYLE = 'MAP_GROUND_SET_MAP_STYLE';
 
-const LIGHT_MAP_NAME = 'mapbox://styles/cap/ciqxz8ptq0007bonnm0lmwz45';
+const LIGHT_MAP_NAME = 'mapbox://styles/mapbox/light-v9';
 
 const LIGHT_MAP = {
   name: 'Light',
@@ -37,13 +33,12 @@ export const mapGroundActions = {
   setMapStyle
 };
 
-var actionHandlers = {
+const actionHandlers = {
   MAP_GROUND_SET_MAP_STYLE: (state, { payload: { styleName } }) => {
-    let soughtStyle = _.find(state.availableMapStyles, 'name', styleName);
-    if (soughtStyle == null) {
+    const soughtStyle = _.find(state.availableMapStyles, 'name', styleName);
+    if (!soughtStyle) {
       return state;
     }
-
     return { ...state, mapStyle: soughtStyle };
   }
 };

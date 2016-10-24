@@ -15,3 +15,5 @@ docs/geocoding_data
 docs/census_data
 docs/zip_shapes
 public
+pythonstuff
+scripts/.ipynb_checkpoints

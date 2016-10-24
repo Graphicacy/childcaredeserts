@@ -1,5 +1,5 @@
 // Boots the react-redux app. It is only interested
-// in loading React and Redux, and finally 
+// in loading React and Redux, and finally
 // instantiating the actual application.
 
 // Think of it as a boot loader on a computer.

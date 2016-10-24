@@ -12,21 +12,21 @@ const EXPECTED_PROPERTY_VALIDATORS = {
 export const featurePropertiesValidator = createValidator(EXPECTED_PROPERTY_VALIDATORS);
 
 const EXPECTED_GEO_JSON_FEATURE_COLLECTION_PROPERTIES =  {
-  type: (type) => _.isString(type) && type == FEATURE_COLLECTION,
+  type: (type) => _.isString(type) && type === FEATURE_COLLECTION,
   features: (features) => {
-    let isArray = _.isArray(features);
+    const isArray = _.isArray(features);
     if (isArray === false) {
       return false;
     }
-    
-    let everyPropertyIsValid = _.every(features, feature => featurePropertiesValidator(feature.properties));
+
+    const everyPropertyIsValid = _.every(features, feature => featurePropertiesValidator(feature.properties));
     if (everyPropertyIsValid === false) {
       return false;
     }
-    let uniqueItemsById = _.flow(
+    const uniqueItemsById = _.flow(
       _.map(f => f.properties[ID_FIELD]),
       _.uniq)(features);
-    let everyPropertyIdIsUnique = uniqueItemsById && features && uniqueItemsById.length === features.length;
+    const everyPropertyIdIsUnique = uniqueItemsById && features && uniqueItemsById.length === features.length;
 
     return everyPropertyIsValid && everyPropertyIdIsUnique;
   }
@@ -34,11 +34,11 @@ const EXPECTED_GEO_JSON_FEATURE_COLLECTION_PROPERTIES =  {
 
 export const geometryValidator = createValidator(EXPECTED_GEO_JSON_FEATURE_COLLECTION_PROPERTIES);
 const validateGeoJson = (geoJson) => {
-  if (geoJson == null) {
+  if (!geoJson) {
     throw new Error('geoJson cannot be null.');
   }
 
-  let isValid = geometryValidator(geoJson);
+  const isValid = geometryValidator(geoJson);
   if (isValid === false) {
     throw new Error('geojson was invalid.');
   }

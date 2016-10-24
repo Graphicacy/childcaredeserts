@@ -1,11 +1,16 @@
-'use strict';
 import { createAction, handleActions } from 'redux-actions';
 import { some, clamp } from 'lodash';
 
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const BOUNDING_BOX_OF_LOWER_48_STATES = [[-124.763068, 24.544701], [-66.949895, 49.384358]];
+export const BOUNDING_BOX_OF_LOWER_48_STATES = [
+  [-113.1591796875,51.1242127578],[-71.0595703125,27.9555910046]
+];
+
+//[[[-113.1591796875,27.9555910046],[-113.1591796875,49.3537557183],[-71.0595703125,49.3537557183],[-71.0595703125,27.9555910046],[-113.1591796875,27.9555910046]]]
+
+// [[-124.763068, 24.544701], [-66.949895, 49.384358]];
 export const MAP_CAMERA_SET_BOUNDS          = 'MAP_CAMERA_SET_BOUNDS';
 export const MAP_CAMERA_SET_BEARING         = 'MAP_CAMERA_SET_BEARING';
 export const MAP_CAMERA_SET_ANGLE           = 'MAP_CAMERA_SET_ANGLE';
@@ -45,14 +50,14 @@ const MERCATOR_PROJECTION_BOUNDS = {
   latitude:  [-85, 85]
 };
 
-let cleanBounds = (minLong, minLat, maxLong, maxLat) => {
+const cleanBounds = (minLong, minLat, maxLong, maxLat) => {
   [minLong, minLat, maxLong, maxLat] = [minLong, minLat, maxLong, maxLat].map(x => parseFloat(x));
-  let isInvalid = some([minLong, minLat, maxLong, maxLat], isNaN);
+  const isInvalid = some([minLong, minLat, maxLong, maxLat], isNaN);
   if (isInvalid) {
     return null;
   }
 
-  let bounds = [
+  const bounds = [
     [
       clamp(minLong, MERCATOR_PROJECTION_BOUNDS.longitude[0], MERCATOR_PROJECTION_BOUNDS.longitude[1]),
       clamp(minLat, MERCATOR_PROJECTION_BOUNDS.latitude[0],  MERCATOR_PROJECTION_BOUNDS.latitude[1])
@@ -68,14 +73,14 @@ let cleanBounds = (minLong, minLat, maxLong, maxLat) => {
 
 const actionHandlers = {
   MAP_CAMERA_SET_BOUNDS: (state, { payload }) => {
-    let { bounds } = payload;
-    let isBoundsValid = bounds != null && bounds.length === 2;
+    const { bounds } = payload;
+    const isBoundsValid = bounds && bounds.length === 2;
     if (isBoundsValid === false) {
       return state;
     }
 
-    let cleanedBounds = cleanBounds(bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]);
-    if (cleanedBounds == null) {
+    const cleanedBounds = cleanBounds(bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]);
+    if (!cleanedBounds) {
       return state;
     }
 

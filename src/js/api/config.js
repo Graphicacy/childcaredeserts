@@ -1,5 +1,5 @@
 function config () {
-  let configObject = {
+  const configObject = {
     'env': 'PRODUCTION',
     'apiUrl': 'http://localhost:8080',
   };

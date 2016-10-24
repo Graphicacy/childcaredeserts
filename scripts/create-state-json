@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+TOPO_FOLDER=./public/data/topojson
+GEO_FOLDER=./public/data/zcta
+
+convert() {
+  mkdir -p $TOPO_FOLDER
+  topojson -p -o $TOPO_FOLDER/$1 $GEO_FOLDER/$1
+}
+
+for filename in $GEO_FOLDER/*; do
+  convert $(basename $filename)
+done

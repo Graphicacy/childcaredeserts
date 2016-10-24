@@ -1,10 +1,5 @@
-'use strict';
-import {
-  createAction, handleActions
-}
-from 'redux-actions';
-import turf from 'turf-bbox';
-import _ from 'lodash';
+import * as _ from 'lodash';
+import { createAction, handleActions } from 'redux-actions';
 import { getSelectedStateProperties } from '../sidebar/Sidebar.selectors';
 import { mapCameraActions, BOUNDING_BOX_OF_LOWER_48_STATES } from './Map.state.camera';
 // ------------------------------------
@@ -14,6 +9,13 @@ export const MAP_INTERACTIVITY_SET_SELECTED_FEATURES = 'MAP_INTERACTIVITY_SET_SE
 export const MAP_INTERACTIVITY_SET_SELECTED_FEATURE_COLLECTION = 'MAP_INTERACTIVITY_SET_SELECTED_FEATURE_COLLECTION';
 export const MAP_INTERACTIVITY_IS_MAP_INITIALIZED = 'MAP_INTERACTIVITY_IS_MAP_INITIALIZED';
 export const MAP_INTERACTIVITY_RESET_MAP = 'MAP_INTERACTIVITY_RESET_MAP';
+export const MAP_INTERACTIVITY_HOVER_OVER_ZIP_FEATURE = 'MAP_INTERACTIVITY_HOVER_OVER_ZIP_FEATURE';
+export const MAP_INTERACTIVITY_HOVER_OVER_NO_ZIP = 'MAP_INTERACTIVITY_HOVER_OVER_NO_ZIP';
+
+
+export const hoverOverZip = createAction(MAP_INTERACTIVITY_HOVER_OVER_ZIP_FEATURE, zip => ({zip}));
+export const hoverOverNoZip = createAction(MAP_INTERACTIVITY_HOVER_OVER_NO_ZIP);
+
 
 // ------------------------------------
 // Default State
@@ -32,16 +34,18 @@ export const setIsMapInitialized = createAction(MAP_INTERACTIVITY_IS_MAP_INITIAL
   return {isMapInitialized};
 });
 
-export const selectMapFeature = (stateId) => {
+export const selectMapFeature = (/* stateId */) => {
   return (dispatch, getState) => {
-    let selectedState = getSelectedStateProperties(getState());
-    let boundingBox = selectedState.bbox;
-    
-    let newCorners = [
-        [boundingBox[0], boundingBox[1]], 
+    const selectedState = getSelectedStateProperties(getState());
+    if (!selectedState) return;
+
+    const boundingBox = selectedState.bbox;
+    const newCorners = [
+        [boundingBox[0], boundingBox[1]],
         [boundingBox[2], boundingBox[3]]
-      ];
-    let selectedBounds = {bounds: newCorners};
+    ];
+    const selectedBounds = {bounds: newCorners};
+
     dispatch(mapCameraActions.setCameraBounds(selectedBounds));
   };
 };
@@ -50,7 +54,7 @@ export const selectMapFeature = (stateId) => {
 // given feature collection.  Escapes gracefully if there's
 // zilch zero nada loaded.
 export const resetMap = () => {
-  return (dispatch, getState) => {
+  return (dispatch, /* getState */) => {
     dispatch(mapCameraActions.setCameraBounds({bounds: BOUNDING_BOX_OF_LOWER_48_STATES}));    // let geoJson = getMapModeGeoJson(state);
   };
 };
@@ -67,14 +71,16 @@ export const resetMap = () => {
 export const mapInteractivityActions = {
   selectMapFeature,
   setIsMapInitialized,
+  hoverOverZip,
+  hoverOverNoZip,
   resetMap
 };
 
-var actionHandlers = {
+const actionHandlers = {
   [MAP_INTERACTIVITY_SET_SELECTED_FEATURES]: (state, { payload: { featureCollection } }) => {
     // check if feature
     let selectedItems;
-    if (featureCollection == null || featureCollection.features == null || featureCollection.features.length === 0) {
+    if (!_.get(featureCollection, 'features.length')) {
       selectedItems = DEFAULT_SETTINGS_STATE.selectedItems;
     } else {
       selectedItems = [featureCollection];
@@ -84,7 +90,7 @@ var actionHandlers = {
   },
   [MAP_INTERACTIVITY_SET_SELECTED_FEATURE_COLLECTION]: (state, { payload: { featureCollection } }) => {
     let selectedItems;
-    if (featureCollection == null || featureCollection.features == null || featureCollection.features.length === 0) {
+    if (_.get(featureCollection, 'features.length')) {
       selectedItems = DEFAULT_SETTINGS_STATE.selectedItems;
     } else {
       selectedItems = [featureCollection];
@@ -92,8 +98,22 @@ var actionHandlers = {
 
     return { ...state, selectedItems };
   },
+
   [MAP_INTERACTIVITY_IS_MAP_INITIALIZED]: (state, { payload: { isMapInitialized } }) => {
     return { ...state, isMapInitialized };
+  },
+
+  [MAP_INTERACTIVITY_HOVER_OVER_ZIP_FEATURE](state, { payload: { zip } }) {
+    return {
+      ...state,
+      zip
+    };
+  },
+  [MAP_INTERACTIVITY_HOVER_OVER_NO_ZIP](state) {
+    return {
+      ...state,
+      zip: null
+    };
   }
 };
 

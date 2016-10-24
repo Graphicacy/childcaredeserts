@@ -1,60 +1,70 @@
 import BaseApi from './BaseApi';
-import { geometryValidator } from './validation/stateValidator';
-import topojson from 'topojson';
-export const ENDPOINT = 'data';
-import {default as bbox } from 'turf-bbox';
-import { tsvParse } from 'd3-dsv';
-import childCareValidator from './validation/childCareCenterValidator';
+import { tsvParse, csvParse } from 'd3-dsv';
+import childCareCenterValidator from './validation/childCareCenterValidator';
 import _ from 'lodash';
 
-const CHILD_CARE_CENTER_FILE_NAME = 'childCareCenters.tsv';
+export const ENDPOINT = 'data';
 
-export class ChildCareCentersApi extends BaseApi {
+
+const CHILD_CARE_CENTER_FILE_NAME = 'childCareCenters.tsv';
+const CHILD_CARE_CENTER_BINARY = 'Child Care Desert binary variable.csv';
+
+export class ChildCareCentersApiClass extends BaseApi {
   constructor (cache = {}, settings = null) {
     super(cache, settings);
   }
 
+  fetchBinaryCC() {
+    const request = super.get(`${ENDPOINT}/${CHILD_CARE_CENTER_BINARY}`);
+    return request.then(result => {
+      const parsed = csvParse(result);
+      return parsed.map(p => ({
+        zip: p.ZCTA,
+        desert: !!(+p.ccdesert)
+      }));
+    });
+  }
+
   fetchChildCareCenters () {
-    let request = super.get(ENDPOINT + `/${CHILD_CARE_CENTER_FILE_NAME}`);
+    const request = super.get(ENDPOINT + `/${CHILD_CARE_CENTER_FILE_NAME}`);
     return request.then(result => {
       try {
-        let rawRows = tsvParse(result);
+        const rawRows = tsvParse(result);
 
         // map the raw string data to numbers where applicable...
-        let parsedRows = rawRows.map(r => {
-          let parsedObject = {
-            // parse our numbers quickly...
-            black: +r.black,
-            density: +r.density,
-            latino: +r.latino,
-            latitude: +r.latitude,
-            longitude: +r.longitude,
-            meanearnin: +r.meanearnin,
-            state: +r.state,
-            tier: +r.tier,
+        const parsedRows = _.chain(rawRows)
+          .filter(r => {
+            return r.state !== '53';
+          })
+          .map(r => {
+            const parsedObject = {
+              // parse our numbers quickly...
+              black: +r.black,
+              density: +r.density,
+              latino: +r.latino,
+              latitude: +r.latitude,
+              longitude: +r.longitude,
+              meanearnin: +r.meanearnin,
+              state: +r.state,
+              tier: +r.tier,
 
-            // and pass through the rest.
-            name: r.name,
-            _id: r._id,
-            zcta: r.zcta,
-            zip: r.zip
-          };
+              // and pass through the rest.
+              name: r.name,
+              _id: r._id,
+              zcta: r.zcta,
+              zip: r.zip
+            };
 
-          //TODO: we have bad data so we're fixing it.
-          if (parsedObject.density == null || parsedObject.density === 0) {
-            parsedObject.meanearnin = parsedObject.density;
-          }
+            //TODO: we have bad data so we're fixing it.
+            if (!parsedObject.density) {
+              parsedObject.meanearnin = parsedObject.density;
+            }
 
-          return parsedObject;
-        });
+            return parsedObject;
+          })
+          .value();
         // validate that we have the properties we need.
-        let isValid = _.every(parsedRows, row => {
-          let isPass = childCareValidator(row);
-          if (isPass === false) {
-          }
-
-          return isPass;
-        });
+        const isValid = _.every(parsedRows, row => childCareCenterValidator(row));
         if (isValid === false) {
           throw new Error('child care centers tsv is not valid.');
         }
@@ -65,7 +75,7 @@ export class ChildCareCentersApi extends BaseApi {
         return Promise.reject(error);
       }
     });
-  };
-};
+  }
+}
 
-export default new ChildCareCentersApi();
+export default new ChildCareCentersApiClass();

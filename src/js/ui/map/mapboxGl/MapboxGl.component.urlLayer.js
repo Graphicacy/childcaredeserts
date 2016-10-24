@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import mapboxGl from 'mapbox-gl';
-import _ from 'lodash';
+// import mapboxGl from 'mapbox-gl';
+// import _ from 'lodash';
 
 const MapboxGlComponentUrlLayer = React.createClass( {
   propTypes: {
@@ -43,7 +43,7 @@ const MapboxGlComponentUrlLayer = React.createClass( {
 
   },
 
-  onLayerMouseOver (e) {
+  onLayerMouseOver () {
     // let features = this.getInteractiveFeaturesOverPoint(e.point);
     // this.props.map.getCanvas().style.cursor = features.length ? 'pointer' : '';
     // if (this.props.onFeatureHover != null) {
@@ -55,7 +55,7 @@ const MapboxGlComponentUrlLayer = React.createClass( {
     // }
   },
 
-  getInteractiveFeaturesOverPoint(point) {
+  getInteractiveFeaturesOverPoint() {
     // let interactiveLayerNames = this.props.layers
     //   .filter(layer => layer.definition.interactive)
     //   .map(layer => layer.definition.id);
@@ -64,7 +64,7 @@ const MapboxGlComponentUrlLayer = React.createClass( {
     // return features;
   },
 
-  componentDidUpdate (previousProps) {
+  componentDidUpdate () {
     // let isDuplicate = previousProps === this.props;
     // if (isDuplicate) {
     //   return;
@@ -83,7 +83,7 @@ const MapboxGlComponentUrlLayer = React.createClass( {
     // })
   },
 
-  updateLayerFilter (layer) {
+  updateLayerFilter () {
     // if (layer.definition.filter == null) {
     //   return;
     // }
@@ -91,7 +91,7 @@ const MapboxGlComponentUrlLayer = React.createClass( {
     // this.props.map.setFilter(layer.definition.id, layer.definition.filter);
   },
 
-  onLayerClick(e) {
+  onLayerClick() {
     // if (this.props.onFeatureClick == null) {
     //   return;
     // }
@@ -108,13 +108,13 @@ const MapboxGlComponentUrlLayer = React.createClass( {
     // TODO: remove map.
   },
 
-  addLayers (map, layers) {
+  addLayers () {
     // layers.forEach(layer => {
     //   map.addLayer(layer.definition, layer.insertBefore);
     // });
   },
   render () {
-    return null;    
+    return null;
   }
 });
 

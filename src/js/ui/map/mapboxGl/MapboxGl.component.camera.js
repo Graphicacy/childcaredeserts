@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
 import mapboxGl from 'mapbox-gl';
@@ -13,19 +11,26 @@ const MapboxGlComponentCamera = React.createClass( {
   componentDidMount() {
   },
 
-  setBounds ({bounds, bearing = 0, angle = 0, animationSpeed = 1.4, pixelBuffer = 0}) {
-    if (this.props.map == null) {
+  setBounds ({bounds, bearing = 0, /* angle = 0, */ animationSpeed = 1.4, pixelBuffer = 50 }) {
+    if (!this.props.map) {
       /*eslint-disable no-console */
       console.warn('Map was driven prior to being available.');
       /*eslint-enable no-alert */
       return;
     }
 
-    let mapBounds = mapboxGl.LngLatBounds.convert(bounds);
+    const width = window.innerWidth;
+
+    const offset = (width <= 768)
+      ? [0,0]
+      : [200, 0];
+
+    const mapBounds = mapboxGl.LngLatBounds.convert(bounds);
     this.props.map.fitBounds(mapBounds, { speed: animationSpeed,
       padding: pixelBuffer,
-      pitch: bearing
-       });
+      pitch: bearing,
+      offset: offset
+    });
   },
 
   setOrientation ({bearing, angle}) {
@@ -33,22 +38,22 @@ const MapboxGlComponentCamera = React.createClass( {
     this.props.map.setPitch(bearing);
   },
 
-  componentWillUpdate (nextProps) {
+  componentWillUpdate () {
   },
 
   // update camera takes priority. If there are two changes at once,
   // only update camera position - not bearing or angle.
   updateCamera (camera, previousCamera) {
-    let isBoundsChanged = previousCamera.bounds !== camera.bounds;
+    const isBoundsChanged = previousCamera.bounds !== camera.bounds;
     if (isBoundsChanged) {
       this.setBounds(camera);
       return true;
     }
 
-    let previousOrientation = {bearing: previousCamera.bearing, angle: previousCamera.angle};
-    let currentOrientation = {bearing: camera.bearing, angle: camera.angle};
+    const previousOrientation = {bearing: previousCamera.bearing, angle: previousCamera.angle};
+    const currentOrientation = {bearing: camera.bearing, angle: camera.angle};
 
-    let isOrientationChanged = _.isEqual(previousOrientation, currentOrientation) === false;
+    const isOrientationChanged = _.isEqual(previousOrientation, currentOrientation) === false;
     if (isOrientationChanged) {
       this.setOrientation(camera);
       return true;
@@ -58,7 +63,7 @@ const MapboxGlComponentCamera = React.createClass( {
   },
 
   componentDidUpdate(previousProps) {
-    if (this.props.map == null) {
+    if (!this.props.map) {
       /*eslint-disable no-console */
       console.warn('Map was driven prior to being available.');
       /*eslint-enable no-console */
