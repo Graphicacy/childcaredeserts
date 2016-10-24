@@ -750,6 +750,11 @@ html, body {
   pointer-events: none;
   opacity: 0.3; }
 
+.report-link {
+  font-weight: bold; }
+  .report-link:hover {
+    border-bottom: 1px solid #555 !important; }
+
 .mapboxgl-ctrl-compass {
   display: none !important; }
 
