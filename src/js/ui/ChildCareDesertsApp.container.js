@@ -302,8 +302,11 @@ const ChildCareDesertsAppContainer = React.createClass({
               <div className='sidebar-container opaque'>
                 <StateCharts/>
                 <span className="info mobile-about-data">
-                  DOWNLOAD THE REPORT
-                  <i className="icon-info icons"></i>
+                  <a href="https://www.americanprogress.org/?p=225703"
+                     target="__blank">
+                    DOWNLOAD THE REPORT
+                    <i className="icon-info icons"></i>
+                  </a>
                 </span>
                 <span className="info mobile-about-data"
                       onClick={this.props.showAboutData}>
