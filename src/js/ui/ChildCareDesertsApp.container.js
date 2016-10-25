@@ -213,7 +213,8 @@ const ChildCareDesertsAppContainer = React.createClass({
           More information about the authors’ methodology and findings can be
           found in the report &nbsp;
           <a className="report-link"
-            href="https://www.americanprogress.org/?p=225703">
+            href="https://www.americanprogress.org/?p=225703"
+            target="__blank">
             "Child Care Deserts: An Analysis of Child Care
             Centers by ZIP Code in 8 States".
           </a>
@@ -241,7 +242,8 @@ const ChildCareDesertsAppContainer = React.createClass({
           </a>
           <div className="info-buttons">
             <span className="info no-mobile">
-              <a href="https://www.americanprogress.org/?p=225703">
+              <a href="https://www.americanprogress.org/?p=225703"
+                 target="__blank">
                 DOWNLOAD THE REPORT
                 <i className="icon-info icons"></i>
               </a>
