@@ -708,7 +708,7 @@ html, body {
   height: 100%;
   position: relative;
   z-index: 12;
-  padding: 30px;
+  padding: 27px;
   overflow-y: auto;
   text-align: center;
   font-size: 13px; }
@@ -744,7 +744,8 @@ html, body {
     .sidebar-container button:hover {
       background-color: #91AEBC; }
   .sidebar-container .description-paragraph {
-    text-align: left; }
+    text-align: left;
+    margin-bottom: 15px; }
 
 .center-buttons.no-click button {
   pointer-events: none;
