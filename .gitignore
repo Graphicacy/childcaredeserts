@@ -17,3 +17,4 @@ docs/zip_shapes
 public
 pythonstuff
 scripts/.ipynb_checkpoints
+!public/images
