@@ -116,7 +116,7 @@ const ChildCareDesertsAppContainer = React.createClass({
             <div style={{
               width: '100%',
               height: '100%',
-              backgroundImage: `url("./images/state-${padded}.png")`,
+              backgroundImage: `url("./images/state_${padded}.png")`,
               backgroundSize: 'cover',
               backgroundPosition: 'center center'
             }}>
