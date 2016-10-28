@@ -781,7 +781,6 @@ html, body {
     display: block; }
     .state-grid .state-row.row .state-cell {
       height: 100%;
-      opacity: 0.8;
       background-color: #FFF;
       padding: 0px; }
       .state-grid .state-row.row .state-cell .description, .state-grid .state-row.row .state-cell .image {
@@ -800,7 +799,7 @@ html, body {
   .state-grid:hover {
     cursor: pointer; }
     .state-grid:hover .state-row.row .state-cell:not(:hover) {
-      opacity: 0.5; }
+      opacity: 0.3; }
     .state-grid:hover .state-row.row .state-cell:hover {
       -webkit-box-shadow: 10px 10px 63px -8px rgba(0, 0, 0, 0.75);
       -moz-box-shadow: 10px 10px 63px -8px rgba(0, 0, 0, 0.75);
